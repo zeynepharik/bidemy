@@ -1,4 +1,4 @@
-package com.bidemy.entity;
+package com.bidemy.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,24 +7,19 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
+@Table(name = "app_user")
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Video extends Auditable {
+@AllArgsConstructor
+public class User extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String fullName;
 
-    private String url;
-
-    private int duration;
-
-    @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    private String email;
 
 
 }

@@ -1,4 +1,5 @@
-package com.bidemy.repository;
+package com.bidemy.model.repository;
+
 
 import com.bidemy.model.entity.Video;
 import org.springframework.data.jpa.repository.JpaRepository;

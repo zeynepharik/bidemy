@@ -1,4 +1,4 @@
-package com.bidemy.repository;
+package com.bidemy.model.repository;
 
 import com.bidemy.model.entity.Course;
 import org.springframework.data.jpa.repository.JpaRepository;

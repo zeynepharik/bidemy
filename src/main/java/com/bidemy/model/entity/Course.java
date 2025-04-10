@@ -1,4 +1,4 @@
-package com.bidemy.entity;
+package com.bidemy.model.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
