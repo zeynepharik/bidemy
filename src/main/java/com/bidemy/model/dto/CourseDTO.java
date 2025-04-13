@@ -1,4 +1,4 @@
-package com.bidemy.dto;
+package com.bidemy.model.dto;
 
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
