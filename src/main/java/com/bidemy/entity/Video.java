@@ -18,13 +18,11 @@ public class Video extends Auditable {
 
     private String title;
 
-    private String url;
-
     private int duration;
 
     @ManyToOne
-    @JoinColumn(name = "course_id")
-    private Course course;
+    @JoinColumn(name = "category_id")
+    private Category category;
 
 
 }
