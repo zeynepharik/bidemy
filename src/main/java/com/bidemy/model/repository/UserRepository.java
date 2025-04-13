@@ -1,6 +1,7 @@
-package com.bidemy.repository;
+package com.bidemy.model.repository;
 
-import com.bidemy.entity.User;
+
+import com.bidemy.model.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
