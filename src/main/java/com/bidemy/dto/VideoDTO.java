@@ -19,13 +19,10 @@ public class VideoDTO {
     @NotEmpty(message = "Video title is required")
     private String title;
 
-    @NotEmpty(message = "Video URL is required")
-    private String url;
-
     @Min(value = 1,message = "Video duration must be at least 1 second")
     private int duration;
 
-    @NotNull(message = "Course ID is required")
-    private Long courseId;
+    @NotNull(message = "Category ID is required")
+    private Long categoryId;
 
 }
