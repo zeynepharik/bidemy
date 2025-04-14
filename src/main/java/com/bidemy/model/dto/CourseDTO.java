@@ -21,6 +21,12 @@ public class CourseDTO {
     @NotEmpty(message = "Course description is required")
     private String description;
 
+    @NotEmpty(message = "Course URL is required")
+    private String url;
+
     @NotNull(message = "User ID is required")
-    private Long userId;
+    private Long instructorId;
+
+    @NotNull(message = "Category ID is required")
+    private Long categoryId;
 }

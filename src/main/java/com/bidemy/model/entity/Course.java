@@ -30,7 +30,7 @@ public class Course extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user;
+    private User instructor;
 
 
 }
