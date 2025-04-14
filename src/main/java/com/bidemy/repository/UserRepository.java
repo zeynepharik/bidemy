@@ -1,4 +1,4 @@
-package com.bidemy.model.repository;
+package com.bidemy.repository;
 
 
 import com.bidemy.model.entity.User;
