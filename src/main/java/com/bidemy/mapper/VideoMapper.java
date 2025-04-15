@@ -1,15 +1,16 @@
 package com.bidemy.mapper;
 
-import com.bidemy.model.dto.CategoryDTO;
-import com.bidemy.model.entity.Category;
+
+import com.bidemy.model.dto.VideoDTO;
+import com.bidemy.model.entity.Video;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 @Mapper(componentModel = "spring")
 public interface VideoMapper {
-    @Mapping(source = "category.id", target = "categoryId")
-    CategoryDTO toDTO(Category category);
+    @Mapping(source = "video.id", target = "videoId")
+    VideoDTO toDTO(Video video);
 
-    @Mapping(source = "categoryId", target = "category.id")
-    Category toEntity(CategoryDTO categoryDTO);
+    @Mapping(source = "videoId", target = "video.id")
+    Video toEntity(VideoDTO videoDTO);
 }
