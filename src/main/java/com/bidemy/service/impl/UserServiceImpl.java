@@ -1,0 +1,61 @@
+package com.bidemy.service.impl;
+
+import com.bidemy.mapper.UserMapper;
+import com.bidemy.model.dto.UserDTO;
+import com.bidemy.model.entity.User;
+import com.bidemy.repository.UserRepository;
+import com.bidemy.service.IUserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.NoSuchElementException;
+
+@Service
+@RequiredArgsConstructor
+public class UserServiceImpl implements IUserService {
+
+    private final UserRepository userRepository;
+
+    private final UserMapper userMapper;
+
+    @Override
+    public UserDTO create(UserDTO dto) {
+        User user = userMapper.toEntity(dto);
+        user = userRepository.save(user);
+        return userMapper.toDTO(user);
+    }
+
+    @Override
+    public UserDTO getById(Long id) {
+        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+        return userMapper.toDTO(user);
+    }
+
+    @Override
+    public List<UserDTO> getAll() {
+        List<User> users = userRepository.findAll();
+        List<UserDTO> userDTOS = new ArrayList<>();
+        for (User user : users){
+            userDTOS.add(userMapper.toDTO(user));
+        }
+        return userDTOS;
+    }
+
+    @Override
+    public UserDTO update(Long id, UserDTO dto) {
+        User user = userRepository.findById(id).orElseThrow(()->new NoSuchElementException("Kullanıcı Bulunamadı"));
+        user.setFullName(dto.getFullName());
+        user.setEmail(dto.getEmail());
+        user = userRepository.save(user);
+        return userMapper.toDTO(user);
+    }
+
+    @Override
+    public void delete(Long id) {
+        User user = userRepository.findById(id).orElseThrow(()->new NoSuchElementException("Kullanıcı bulunamadı"));
+        userRepository.delete(user);
+    }
+}
