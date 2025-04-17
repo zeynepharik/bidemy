@@ -1,5 +1,7 @@
 package com.bidemy.service.impl;
 
+import com.bidemy.exception.BusinessValidationException;
+import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.mapper.CourseMapper;
 import com.bidemy.model.dto.CourseDTO;
 import com.bidemy.model.entity.Category;
@@ -30,7 +32,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public CourseDTO getById(Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(()->new NoSuchElementException("Course Bulunamadı"));
+        Course course = courseRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.COURSE_NOT_FOUND));
         return courseMapper.toDto(course);
     }
 
@@ -46,7 +48,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public CourseDTO update(Long id, CourseDTO dto) {
-        Course course = courseRepository.findById(id).orElseThrow(()->new NoSuchElementException("Course bulunamadı"));
+        Course course = courseRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.COURSE_NOT_FOUND));
         course.setTitle(dto.getTitle());
         course.setUrl(dto.getUrl());
         course.setDescription(dto.getDescription());
@@ -58,7 +60,7 @@ public class CourseServiceImpl implements ICourseService {
 
     @Override
     public void delete(Long id) {
-        Course course = courseRepository.findById(id).orElseThrow(()->new NoSuchElementException("Course bulunamadı"));
+        Course course = courseRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.COURSE_NOT_FOUND));
         courseRepository.delete(course);
     }
 }

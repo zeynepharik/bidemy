@@ -1,5 +1,7 @@
 package com.bidemy.service.impl;
 
+import com.bidemy.exception.BusinessValidationException;
+import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.mapper.VideoMapper;
 import com.bidemy.model.dto.VideoDTO;
 import com.bidemy.model.entity.Category;
@@ -29,7 +31,7 @@ public class VideoServiceImpl implements IVideoService {
 
     @Override
     public VideoDTO getById(Long id) {
-        Video video = videoRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Video Bulunamadı"));
+        Video video = videoRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.VİDEO_NOT_FOUND));
         return videoMapper.toDto(video);
     }
 
@@ -45,7 +47,7 @@ public class VideoServiceImpl implements IVideoService {
 
     @Override
     public VideoDTO update(Long id, VideoDTO videoDTO) {
-        Video video = videoRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Video Bulunamadı"));
+        Video video = videoRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.VİDEO_NOT_FOUND));
         video.setTitle(videoDTO.getTitle());
         video.setDuration(videoDTO.getDuration());
         video.setCategory(new Category(videoDTO.getCategoryId(), null));
@@ -55,7 +57,7 @@ public class VideoServiceImpl implements IVideoService {
 
     @Override
     public void delete(Long id) {
-        Video video = videoRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Video Bulunamadı"));
+        Video video = videoRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.VİDEO_NOT_FOUND));
         videoRepository.delete(video);
     }
 }

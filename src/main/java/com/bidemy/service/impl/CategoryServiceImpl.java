@@ -1,5 +1,7 @@
 package com.bidemy.service.impl;
 
+import com.bidemy.exception.BusinessValidationException;
+import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.mapper.CategoryMapper;
 import com.bidemy.model.dto.CategoryDTO;
 import com.bidemy.model.entity.Category;
@@ -28,7 +30,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryDTO getById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Category Bulunamadı"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
         return categoryMapper.toDTO(category);
     }
 
@@ -44,7 +46,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public CategoryDTO update(Long id, CategoryDTO dto) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Category Bulunamadı"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
         category.setName(dto.getName());
         category = categoryRepository.save(category);
         return categoryMapper.toDTO(category);
@@ -52,8 +54,7 @@ public class CategoryServiceImpl implements ICategoryService {
 
     @Override
     public void delete(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new NoSuchElementException("Category bulunamadı"));
+        Category category = categoryRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
         categoryRepository.delete(category);
-
     }
 }
