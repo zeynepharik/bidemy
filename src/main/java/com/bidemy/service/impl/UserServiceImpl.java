@@ -1,5 +1,7 @@
 package com.bidemy.service.impl;
 
+import com.bidemy.exception.BusinessValidationException;
+import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.mapper.UserMapper;
 import com.bidemy.model.dto.UserDTO;
 import com.bidemy.model.entity.User;
@@ -30,7 +32,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO getById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new NoSuchElementException("User not found"));
+        User user = userRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         return userMapper.toDTO(user);
     }
 
@@ -46,7 +48,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public UserDTO update(Long id, UserDTO dto) {
-        User user = userRepository.findById(id).orElseThrow(()->new NoSuchElementException("Kullanıcı Bulunamadı"));
+        User user = userRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         user.setFullName(dto.getFullName());
         user.setEmail(dto.getEmail());
         user = userRepository.save(user);
@@ -55,7 +57,7 @@ public class UserServiceImpl implements IUserService {
 
     @Override
     public void delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()->new NoSuchElementException("Kullanıcı bulunamadı"));
+        User user = userRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         userRepository.delete(user);
     }
 }
