@@ -2,6 +2,7 @@ package com.bidemy.service.impl;
 
 import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
+import com.bidemy.jwt.RegisterRequest;
 import com.bidemy.mapper.UserMapper;
 import com.bidemy.model.dto.UserDTO;
 import com.bidemy.model.entity.User;
@@ -47,10 +48,11 @@ public class UserServiceImpl implements IUserService {
     }
 
     @Override
-    public UserDTO update(Long id, UserDTO dto) {
+    public UserDTO update(Long id, RegisterRequest request) {
         User user = userRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
-        user.setFullName(dto.getFullName());
-        user.setEmail(dto.getEmail());
+        user.setFullName(request.getFullName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
         user = userRepository.save(user);
         return userMapper.toDTO(user);
     }
