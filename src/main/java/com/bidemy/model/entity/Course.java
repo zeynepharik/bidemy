@@ -22,6 +22,8 @@ public class Course extends Auditable {
     private String title;
     private String description;
     private String url;
+    private String pictureUrl;
+    private Double price;
 
     @ManyToOne
     @JoinColumn(name = "category_id")

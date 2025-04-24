@@ -1,6 +1,7 @@
 package com.bidemy.model.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -27,6 +28,11 @@ public class User extends Auditable implements UserDetails {
     private String email;
 
     private String password;
+    private String role;
+
+    public User(@NotNull(message = "User ID is required") Long instructorId, Object o, Object o1, Object o2) {
+        super();
+    }
 
 
     @Override
@@ -37,5 +43,9 @@ public class User extends Auditable implements UserDetails {
     @Override
     public String getUsername() {
         return email;
+    }
+
+    public String getRole() {
+        return role;
     }
 }

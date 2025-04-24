@@ -1,5 +1,7 @@
 package com.bidemy.model.dto;
 
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
@@ -29,4 +31,11 @@ public class CourseDTO {
 
     @NotNull(message = "Category ID is required")
     private Long categoryId;
+
+    @NotNull(message = "Course price is required")
+    @Min(value = 250, message = "Price must be greater than or equal to 250")
+    @Max(value=3000,message = "Price must be greater than or equal to 3000")
+    private Double price;
+
+    private String pictureUrl;
 }

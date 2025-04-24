@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="tr" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <title>Fiyatlandırma</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/css/side.css">
+</head>
+<body>
+<div th:replace="fragments/courses-navbar :: navbar"></div>
+
+<div class="wrapper">
+  <div th:insert="fragments/sidebar :: instructorSidebar('pricing')"></div>
+  <div class="container mt-5">
+    <h4 class="fw-semibold" style="font-family: Georgia, Times, serif; margin-left: 20px;">Fiyatlandırma</h4>
+    <hr class="w-100 border-1 opacity-75">
+
+    <p>Kursunuz için bir fiyat belirleyin.<br>
+      Lütfen kursunuz için <strong>Minimum 250 TL</strong> ve <strong>Maksimum 3.000 TL</strong> olarak seçin.</p>
+
+    <form th:action="@{/instructor/courses/manage/pricing/save}" method="post" th:object="${courseDTO}">
+      <div class="mb-4">
+        <label for="price" class="form-label">Fiyat (TL)</label>
+        <input type="number" min="250" max="3000" step="1" class="form-control" id="price" th:field="*{price}" placeholder="Kurs fiyatını girin.">
+      </div>
+      <button type="submit" class="btn text-white" style="background-color: #6f42c1;">Kaydet</button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

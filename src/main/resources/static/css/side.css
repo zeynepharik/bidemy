@@ -1,0 +1,73 @@
+.sidebar {
+    width: 250px;
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-right: 1px solid #dee2e6;
+    height: 100vh;
+}
+
+.sidebar h5 {
+    margin-top: 20px;
+    margin-bottom: 10px;
+    font-weight: bold;
+}
+
+.sidebar a {
+    display: block;
+    padding: 8px 12px;
+    color: #333;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-bottom: 5px;
+    transition: color 0.2s ease;
+}
+.sidebar a.active {
+    color: #6f42c1;
+    font-weight: 600;
+}
+
+.sidebar a i {
+    margin-right: 10px;
+    font-size: 0.8rem;
+}
+
+.sidebar a:hover {
+    color: #6f42c1;
+}
+
+.create-button {
+    margin-top: 30px;
+}
+
+.main-content {
+    flex-grow: 3;
+    padding: 30px;
+}
+
+.wrapper {
+    display: flex;
+}
+.sidebar .btn-purple {
+    background-color: #6f42c1;
+    color: white;
+    border: none;
+}
+.sidebar .btn-purple:hover {
+    background-color: #5a379f;
+    color: white;
+}
+.section-container {
+    margin-bottom: 2rem;
+}
+
+.curriculum-panel .panel-lesson,
+.curriculum-panel .panel-exam,
+.curriculum-panel .panel-coding,
+.curriculum-panel .panel-homework {
+    margin-top: 1rem;
+}
+
+.article-panel {
+    min-height: 200px;
+}
+
