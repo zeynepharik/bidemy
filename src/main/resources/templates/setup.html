@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Kurs Yapısı</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="/css/side.css">
+</head>
+<body>
+<div th:replace="fragments/courses-navbar :: navbar"></div>
+
+<div class="wrapper">
+    <div th:replace="fragments/sidebar :: instructorSidebar('setup')"></div>
+
+    <div class="main-content">
+        <h4 class="fw-semibold" style="font-family: Georgia, Times, serif; margin-left: 20px;">Kurulum</h4>
+        <hr class="w-150 border-1 opacity-75">
+        <h4 class="fw-bold mb-3">İpuçları</h4>
+
+        <p>
+            <span class="fw-bold">Ekipman bulmak aslında çok kolay.</span><br>
+            Pahalı ekipmanlar almanıza gerek yok. Akıllı telefonların çoğu ile HD kalitesinde video çekebilir, sesi ise farklı bir telefon veya harici mikrofon ile kaydedebilirsiniz.
+        </p>
+
+        <p>
+            <span class="fw-bold">Öğrencilerin sizi duyması gerekir.</span><br>
+            Ekipmanınızın en önemli parçası olan mikrofonu uygun fiyatla satın alabilirsiniz. Mikrofonu doğru şekilde taktığınızdan ve kendinizden 15-30 cm uzakta olacak şekilde yerleştirdiğinizden emin olun.
+        </p>
+
+        <p>
+            <span class="fw-bold">Stüdyo oluşturun.</span><br>
+            Arka planınızı temizleyin ve sahne donanımını ayarlayın. Renkli kağıtlardan yapılmış bir fon veya ütülü bir çarşafla neredeyse tüm küçük alanları bir stüdyoya dönüştürebilirsiniz.
+        </p>
+
+        <p>
+            <span class="fw-bold">Sahneyi ve yüzünüzü aydınlatın.</span><br>
+            Tepe ışıklarını kapatın. Karşınıza iki adet, arka plana bir adet lamba yerleştirerek üç noktalı aydınlatmayı deneyin.
+        </p>
+
+        <p>
+            <span class="fw-bold">Gürültüyü ve yankılanmayı azaltın.</span><br>
+            Fanları veya havalandırmayı kapatın ve sessiz bir ortamda kayıt yapın. Duvarları akustik köpükle veya battaniyeyle kaplayın ve yankılanmayı azaltmak için stüdyoda halı veya mobilya bulundurun.
+        </p>
+
+        <p>
+            <span class="fw-bold">Yaratıcı olun.</span><br>
+            Öğrenciler perde arkasını görmez. İsterseniz ses yalıtımı sağlamak için etrafı yastıklarla kaplayın; topluluktaki diğer eğitmenlerle paylaşmadığınız sürece bunu yalnızca siz bilebilirsiniz!
+        </p>
+
+        <h4 class="fw-bold mt-4">Gereksinimler</h4>
+        <ul class="list-unstyled">
+            <li><i class="bi bi-dot"></i> En az 720p (veya mümkünse 1080p) çözünürlükte videolar oluşturmak için HD olarak çekim yapın ve dışa aktarın</li>
+            <li><i class="bi bi-dot"></i> Ses, hem sol hem sağ kanaldan gelmeli ve videonuzla senkronize olmalıdır</li>
+            <li><i class="bi bi-dot"></i> Öğrencilerin dikkatinin dağılmaması için seste yankı ve arka plan gürültüsü olmadığından emin olun</li>
+        </ul>
+    </div>
+</div>
+</body>
+</html>

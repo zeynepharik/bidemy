@@ -10,6 +10,7 @@ import com.bidemy.model.entity.User;
 import com.bidemy.repository.RefreshTokenRepository;
 import com.bidemy.repository.UserRepository;
 import com.bidemy.service.IAuthService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -22,22 +23,18 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Service
+@RequiredArgsConstructor
 public class AuthServiceImpl implements IAuthService {
 
-    @Autowired
-    private JwtService jwtService;
+    private final JwtService jwtService;
 
-    @Autowired
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Autowired
-    private AuthenticationProvider authenticationProvider;
+    private final AuthenticationProvider authenticationProvider;
 
-    @Autowired
-    private RefreshTokenRepository refreshTokenRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+    private final UserRepository userRepository;
 
 
     public RefreshToken createRefreshToken(User user) {
@@ -53,7 +50,7 @@ public class AuthServiceImpl implements IAuthService {
     public AuthResponse authenticate(AuthRequest authRequest) {
         try {
             UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
-                authenticationProvider.authenticate(authentication);
+            authenticationProvider.authenticate(authentication);
             Optional<User> user = userRepository.findByEmail(authRequest.getEmail());
             String accessToken = jwtService.generateToken(user.get());
 
@@ -76,6 +73,7 @@ public class AuthServiceImpl implements IAuthService {
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
         user.setPassword(bCryptPasswordEncoder.encode(request.getPassword()));
+        user.setRole("USER");
 
         User savedUser = userRepository.save(user);
         BeanUtils.copyProperties(savedUser, dto);
