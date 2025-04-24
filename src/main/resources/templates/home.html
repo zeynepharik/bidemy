@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Home</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+  <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<nav class="navbar navbar-expand-lg bg-white shadow border-bottom">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">
+      <img th:src="@{/images/bidemy-logo.png}" alt="Bidemy Logo" style="height: 40px;">
+    </a>
+    <div class="d-flex align-items-center ms-auto">
+      <i class="bi bi-cart text-dark fs-4 me-3"></i>
+
+      <div class="profile-container">
+        <i class="bi bi-person fs-4 text-dark"></i>
+
+
+        <div class="profile-panel">
+          <div class="profile-header"><div class="profile-name-email">
+              <h6 th:text="${session.currentUser != null ? session.currentUser.fullName : 'Kullanıcı Adı'}"></h6>
+              <small th:text="${session.currentUser != null ? session.currentUser.email : 'email@example.com'}"></small>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="profile-options">
+            <a href="#">Öğrenim İçeriğim</a>
+            <a href="#">Sepetim</a>
+            <a href="#">İstek Listesi</a>
+            <a th:href="@{/instructor/courses}">Eğitmen Kontrol Paneli</a>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="profile-options">
+            <a href="#">Hesap Ayarları</a>
+            <a href="#">Ödeme Yöntemleri</a>
+            <a href="#">Satın Alma Geçmişi</a>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="profile-options">
+            <a href="#">Dil</a>
+            <div class="divider"></div>
+            <a href="#">Profili Düzenle</a>
+            <form action="/logout" method="post" style="display:inline;">
+              <button type="submit" class="btn text-dark">Oturumu Kapat</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+<div class="category-bar bg-light border-bottom py-2">
+  <div class="container d-flex justify-content-center gap-3 flex-wrap">
+    <a th:each="category : ${categories}"
+       th:text="${category.name}"
+       href="#"
+       class="category-link text-dark text-decoration-none fw-medium">
+    </a>
+  </div>
+</div>
+<div class="image-container">
+  <img th:src="@{/images/slider1.png}" alt="Large Image" class="img-fluid">
+</div>
+<h2 class="main-title">Öğrenmeye başlayalım</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script>
+  const profileContainer = document.querySelector('.profile-container');
+  const profilePic = document.getElementById('profilePic');
+
+  let timeout;
+
+  profileContainer.addEventListener('mouseenter', () => {
+    clearTimeout(timeout);
+    profileContainer.classList.add('show');
+  });
+
+  profileContainer.addEventListener('mouseleave', () => {
+    timeout = setTimeout(() => {
+      profileContainer.classList.remove('show');
+    }, 200); // 200ms tolerans süresi
+  });
+
+</script>
+
+</body>
+</html>

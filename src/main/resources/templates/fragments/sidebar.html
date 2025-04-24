@@ -1,0 +1,31 @@
+<div th:fragment="instructorSidebar(active)">
+    <div class="sidebar">
+        <h5>Kursunuzu Planlayın</h5>
+        <a th:classappend="${active == 'structure'} ? ' active'" th:href="@{/instructor/courses/manage/course-structure}">
+            <i class="bi bi-circle"></i> Kurs Yapısı
+        </a>
+        <a th:classappend="${active == 'setup'} ? ' active'" th:href="@{/instructor/courses/manage/setup}">
+            <i class="bi bi-circle"></i> Kurulum Yapısı
+        </a>
+
+        <h5>İçeriği Oluşturun</h5>
+        <a th:classappend="${active == 'film'} ? ' active'" th:href="@{/instructor/courses/manage/film}">
+            <i class="bi bi-circle"></i> Çekim ve Düzenleme
+        </a>
+        <a th:classappend="${active == 'curriculum'} ? ' active'" th:href="@{/instructor/courses/manage/curriculum}">
+            <i class="bi bi-circle"></i> Müfredat ve Kurs Bilgileri
+        </a>
+
+        <h5>Yayınlama</h5>
+        <a th:classappend="${active == 'basics'} ? ' active'" th:href="@{/instructor/courses/manage/basics}">
+            <i class="bi bi-circle"></i> Kurs Açılış Sayfası
+        </a>
+        <a th:classappend="${active == 'pricing'} ? ' active'" th:href="@{/instructor/courses/manage/pricing}">
+            <i class="bi bi-circle"></i> Fiyatlandırma
+        </a>
+
+        <div class="create-button mt-4">
+            <a href="#" class="btn btn-purple w-100">Kursunuzu Oluşturun</a>
+        </div>
+    </div>
+</div>

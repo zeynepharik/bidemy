@@ -1,0 +1,176 @@
+/* Oturum Aç butonu */
+.btn-outline-mor {
+    color: #6f42c1;
+    border: 1px solid #6f42c1;
+}
+
+.btn-outline-mor:hover {
+    background-color: #6f42c1;
+    color: white;
+}
+
+/* Kaydol butonu */
+.btn-mor {
+    background-color: #6f42c1;
+    color: white;
+    border: none;
+}
+
+.btn-mor:hover {
+    background-color: #855ac9; /* Hoverda biraz daha açık mor */
+    color: white;
+}
+.mor-btn {
+    background-color: #6f42c1;
+    color: white;
+}
+
+.mor-btn:hover {
+    background-color: #5a33a3;
+}
+
+.mor-link {
+    color: #6f42c1;
+    text-decoration: none;
+}
+
+.mor-link:hover {
+    text-decoration: underline;
+}
+
+.custom-input {
+    height: 50px;
+    font-size: 1.1rem;
+    padding: 0.75rem;
+    max-width: 100%;
+}
+
+.form-title {
+    margin-bottom: 3rem;
+    margin-top: -2rem;
+}
+
+
+.profile-container {
+    position: relative;
+    display: inline-block;
+}
+
+.profile-picture {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.profile-panel {
+    display: none;
+    position: absolute;
+    top: 100%;
+    right: 0;
+    width: 280px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    padding: 1rem;
+    z-index: 1000;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+.profile-options button {
+    background-color: white;
+    border: none;
+    text-align: left;
+    padding-left: 0;
+    margin: 0;
+}
+
+.profile-options button.text-dark {
+    color: black;
+    font-weight: 600;
+}
+
+.profile-container.show .profile-panel {
+    display: block;
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.profile-header .profile-picture {
+    width: 60px;
+    height: 60px;
+    margin-right: 1rem;
+}
+
+.profile-name-email h6 {
+    margin: 0;
+    font-weight: bold;
+}
+
+.profile-name-email small {
+    color: gray;
+}
+
+.profile-options a {
+    display: block;
+    padding: 0.3rem 0;
+    text-decoration: none;
+    color: #333;
+}
+
+.profile-options a:hover {
+    text-decoration: underline;
+}
+
+.divider {
+    border-top: 1px solid #ddd;
+    margin: 0.8rem 0;
+}
+
+.category-bar .category-link:hover {
+    color: purple;
+    text-decoration: underline;
+}
+.category-link {
+    font-size: 0.9rem;
+    font-weight: 900;
+    transition: color 0.3s ease;
+}
+
+.category-link:hover {
+    color: purple !important;
+    text-decoration: underline;
+}
+
+.image-container {
+    margin-top: 0;
+    margin-bottom: 20px;
+    padding: 0 70px;
+}
+
+.image-container img {
+    width: 100%;
+    height: auto;
+    display: block;
+
+}
+.main-title {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: clamp(1.8rem, calc(1.8rem + (2.4 - 1.8) * ((100vw - 36rem) / (144 - 36))), 2.4rem);
+    line-height: 1.25;
+    letter-spacing: -0.016rem;
+    color: #2a2b3f;
+    margin-bottom: 0.8rem;
+    max-width: 36em;
+    padding-left: 75px;
+}
+
+
+
+
+

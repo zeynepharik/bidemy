@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Giriş Yap</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link rel="stylesheet" th:href="@{/css/style.css}">
+</head>
+<body>
+<div th:replace="fragments/navbar.html :: navbar"></div>
+<div class="container-fluid min-vh-100 d-flex">
+    <div class="col-md-7 d-none d-md-block p-0">
+        <img th:src="@{/images/login-side.png}" alt="Login Image" class="img-fluid h-100 w-100" style="object-fit: cover;">
+    </div>
+
+    <div class="col-md-5 bg-white d-flex align-items-center justify-content-center">
+        <div class="w-75">
+
+            <h3 class="form-title fw-semibold text-dark w-75 text-center">Öğrenim yolculuğunuza devam etmek için oturum açın</h3>
+
+            <form th:action="@{/authenticate}" th:object="${authRequest}" method="post">
+                <div class="mb-3">
+                    <input type="email" class="form-control custom-input w-75" id="email" name="email" th:field="*{email}" placeholder="Email" >
+                </div>
+
+                <div class="mb-3">
+                    <input type="password" class="form-control custom-input w-75" id="password" name="password" th:field="*{password}" placeholder="Şifre" required>
+                </div>
+
+                <button type="submit" class="btn mor-btn w-75 mb-3">Giriş Yap</button>
+            </form>
+
+            <div class="text-center mt-4">
+                <p class="text-black w-75">Hesabınız yok mu?
+                    <a th:href="@{/register}" class="mor-link fw-semibold">Kaydol</a>
+                </p>
+                <hr class="text-white mt-3" />
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>
