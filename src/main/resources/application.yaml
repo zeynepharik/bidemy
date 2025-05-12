@@ -11,3 +11,11 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+
+logging:
+  level:
+    root: INFO
+    com.bidemy: DEBUG
+
+file:
+  upload-dir: C:\Users\Zeynep\Documents\uploads

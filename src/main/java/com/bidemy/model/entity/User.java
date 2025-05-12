@@ -30,6 +30,11 @@ public class User extends Auditable implements UserDetails {
     private String password;
     private String role;
 
+    public User(@NotNull(message = "User ID is required") Long instructorId, Object o, Object o1, Object o2) {
+        super();
+    }
+
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of();
@@ -40,4 +45,7 @@ public class User extends Auditable implements UserDetails {
         return email;
     }
 
+    public String getRole() {
+        return role;
+    }
 }

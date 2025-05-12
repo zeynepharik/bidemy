@@ -1,6 +1,7 @@
 package com.bidemy.controller.impl;
 
 import com.bidemy.controller.IUserController;
+import com.bidemy.jwt.RegisterRequest;
 import com.bidemy.model.dto.UserDTO;
 import com.bidemy.service.IUserService;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,8 @@ public class UserControllerImpl implements IUserController {
 
     @PutMapping("/{id}")
     @Override
-    public UserDTO update(@PathVariable Long id, @RequestBody UserDTO dto) {
-        return userService.update(id, dto);
+    public UserDTO update(@PathVariable Long id, @RequestBody RegisterRequest request) {
+        return userService.update(id, request);
     }
 
     @DeleteMapping("/{id}")
