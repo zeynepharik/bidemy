@@ -9,10 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDTO {
+public class VideoContentDTO {
     private Long id;
-    private String fullName;
-    private String email;
-    private String role;
-    private String password;
+    private String description;
+    private Long lessonId;
+
 }
