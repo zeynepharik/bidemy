@@ -1,5 +1,4 @@
-package com.bidemy.model.dto;
-
+package com.bidemy.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,8 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class CategoryDTO {
+public class VideoContentDTO {
     private Long id;
+    private String description;
+    private Long lessonId;
 
-    private String name;
 }

@@ -9,20 +9,19 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
-public class Video extends Auditable {
+@AllArgsConstructor
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "content_type")
+public class Content {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
+    private String description;
 
-    private int duration;
-
-    @ManyToOne
-    @JoinColumn(name = "category_id")
-    private Category category;
-
+    @OneToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
 
 }
