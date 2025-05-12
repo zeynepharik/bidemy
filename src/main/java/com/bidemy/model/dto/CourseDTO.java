@@ -1,4 +1,4 @@
-package com.bidemy.dto;
+package com.bidemy.model.dto;
 
 import jakarta.validation.Valid;
 import lombok.AllArgsConstructor;
@@ -19,6 +19,6 @@ public class CourseDTO {
         private String pictureUrl;
         private Long categoryId;
         private Long instructorId;
-        private @Valid List<SectionDTO> sections;
+        private  List<SectionDTO> sections;
         private Double price;
 }
