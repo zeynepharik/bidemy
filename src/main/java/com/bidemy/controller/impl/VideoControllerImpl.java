@@ -2,7 +2,6 @@ package com.bidemy.controller.impl;
 
 import com.bidemy.controller.IVideoController;
 import com.bidemy.model.dto.VideoDTO;
-import com.bidemy.service.IVideoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 

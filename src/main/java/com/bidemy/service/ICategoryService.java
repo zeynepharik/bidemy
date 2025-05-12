@@ -1,13 +1,19 @@
 package com.bidemy.service;
 
 import com.bidemy.model.dto.CategoryDTO;
+import com.bidemy.model.request.CategoryRequest;
+import com.bidemy.model.response.CategoryResponse;
 
 import java.util.List;
 
 public interface ICategoryService {
-    CategoryDTO create(CategoryDTO dto);
-    CategoryDTO getById(Long id);
-    List<CategoryDTO> getAll();
-    CategoryDTO update(Long id, CategoryDTO dto);
+    CategoryResponse create(CategoryRequest request);
+
+    CategoryResponse getById(Long id);
+
+    List<CategoryResponse> getAll();
+
+    CategoryResponse update(Long id, CategoryRequest request);
+
     void delete(Long id);
 }

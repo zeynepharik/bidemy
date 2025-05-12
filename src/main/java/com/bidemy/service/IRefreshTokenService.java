@@ -4,5 +4,5 @@ import com.bidemy.jwt.AuthResponse;
 import com.bidemy.jwt.RefreshTokenRequest;
 
 public interface IRefreshTokenService {
-    public AuthResponse refreshToken(RefreshTokenRequest request);
+    AuthResponse refreshToken(RefreshTokenRequest request);
 }

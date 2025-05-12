@@ -2,64 +2,68 @@ package com.bidemy.service.impl;
 
 import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
-import com.bidemy.jwt.RegisterRequest;
 import com.bidemy.mapper.UserMapper;
 import com.bidemy.model.dto.UserDTO;
 import com.bidemy.model.entity.User;
+import com.bidemy.model.request.UserRequest;
 import com.bidemy.repository.UserRepository;
 import com.bidemy.service.IUserService;
+import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class UserServiceImpl implements IUserService {
 
     private final UserRepository userRepository;
-
     private final UserMapper userMapper;
+    private final BCryptPasswordEncoder passwordEncoder;
 
-    @Override
-    public UserDTO create(UserDTO dto) {
-        User user = userMapper.toEntity(dto);
+    public UserDTO create(@Valid UserRequest userRequest) {
+        String hashedPassword = passwordEncoder.encode(userRequest.getPassword());
+        User user = userMapper.toEntity(userRequest);
+        user.setPassword(hashedPassword);
         user = userRepository.save(user);
         return userMapper.toDTO(user);
     }
 
-    @Override
     public UserDTO getById(Long id) {
-        User user = userRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         return userMapper.toDTO(user);
     }
 
-    @Override
     public List<UserDTO> getAll() {
-        List<User> users = userRepository.findAll();
-        List<UserDTO> userDTOS = new ArrayList<>();
-        for (User user : users){
-            userDTOS.add(userMapper.toDTO(user));
-        }
-        return userDTOS;
+        return userRepository.findAll()
+                .stream()
+                .map(userMapper::toDTO)
+                .collect(Collectors.toList());
     }
 
-    @Override
-    public UserDTO update(Long id, RegisterRequest request) {
-        User user = userRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
+    public UserDTO update(Long id, UserRequest request) {
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         user.setFullName(request.getFullName());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        if (request.getPassword() != null && !request.getPassword().isEmpty()) {
+            String hashedPassword = passwordEncoder.encode(request.getPassword());
+            user.setPassword(hashedPassword);
+        }
+
         user = userRepository.save(user);
         return userMapper.toDTO(user);
     }
 
-    @Override
     public void delete(Long id) {
-        User user = userRepository.findById(id).orElseThrow(()->new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
+        User user = userRepository.findById(id)
+                .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         userRepository.delete(user);
     }
 }

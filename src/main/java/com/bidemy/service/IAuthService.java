@@ -6,6 +6,7 @@ import com.bidemy.jwt.RegisterRequest;
 import com.bidemy.model.dto.UserDTO;
 
 public interface IAuthService {
-    public UserDTO register(RegisterRequest request);
-    public AuthResponse authenticate(AuthRequest authRequest);
+    UserDTO register(RegisterRequest request);
+
+    AuthResponse authenticate(AuthRequest authRequest);
 }

@@ -3,58 +3,67 @@ package com.bidemy.service.impl;
 import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.mapper.CategoryMapper;
-import com.bidemy.model.dto.CategoryDTO;
 import com.bidemy.model.entity.Category;
+import com.bidemy.model.entity.Course;
+import com.bidemy.model.request.CategoryRequest;
+import com.bidemy.model.response.CategoryResponse;
 import com.bidemy.repository.CategoryRepository;
+import com.bidemy.repository.CourseRepository;
 import com.bidemy.service.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class CategoryServiceImpl implements ICategoryService {
-
     private final CategoryMapper categoryMapper;
     private final CategoryRepository categoryRepository;
+    private final CourseRepository courseRepository;
 
-    @Override
-    public CategoryDTO create(CategoryDTO dto) {
-        Category category = categoryMapper.toEntity(dto);
+    public CategoryResponse create(CategoryRequest request) {
+        Category category = this.categoryMapper.toEntity(request);
         category = categoryRepository.save(category);
-        return categoryMapper.toDTO(category);
+        return categoryMapper.toResponse(category);
     }
 
-    @Override
-    public CategoryDTO getById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
-        return categoryMapper.toDTO(category);
+    public CategoryResponse getById(Long id) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
+        return categoryMapper.toResponse(category);
     }
 
-    @Override
-    public List<CategoryDTO> getAll() {
-        List<Category> categories = categoryRepository.findAll();
-        List<CategoryDTO> categoryDTOS = new ArrayList<>();
-        for (Category category : categories) {
-            categoryDTOS.add(categoryMapper.toDTO(category));
+    public List<CategoryResponse> getAll() {
+        return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
+    }
+
+    public CategoryResponse update(Long id, CategoryRequest request) {
+        Category category = categoryRepository.findById(id)
+                .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
+
+        category.setName(request.getName());
+
+        for(Course course : courseRepository.findByCategoryId(id)) {
+            course.setCategory(category);
+            this.courseRepository.save(course);
         }
-        return categoryDTOS;
-    }
 
-    @Override
-    public CategoryDTO update(Long id, CategoryDTO dto) {
-        Category category = categoryRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
-        category.setName(dto.getName());
         category = categoryRepository.save(category);
-        return categoryMapper.toDTO(category);
+        return categoryMapper.toResponse(category);
     }
 
-    @Override
     public void delete(Long id) {
         Category category = categoryRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
-        categoryRepository.delete(category);
+
+        for(Course course : courseRepository.findByCategoryId(id)) {
+            course.setCategory(null);
+            this.courseRepository.save(course);
+        }
+
+        this.categoryRepository.delete(category);
     }
 }
