@@ -1,4 +1,4 @@
-package com.bidemy.dto;
+package com.bidemy.model.dto;
 
 public class OptionDTO {
     private Long id;

@@ -1,4 +1,4 @@
-package com.bidemy.dto;
+package com.bidemy.model.dto;
 
 import java.util.List;
 
