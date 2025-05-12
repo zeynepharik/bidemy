@@ -2,25 +2,22 @@ package com.bidemy.service;
 
 
 import com.bidemy.model.dto.CourseDTO;
-import com.bidemy.model.entity.Course;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.multipart.MultipartFile;
+import com.bidemy.model.request.CourseRequest;
+import com.bidemy.model.response.CourseResponse;
 
 import java.io.IOException;
-import java.security.Principal;
 import java.util.List;
 
 public interface ICourseService {
-    CourseDTO create(CourseDTO dto);
+   CourseResponse create(CourseRequest request);
 
-    Course createCourse(CourseDTO courseDTO, MultipartFile file, Principal principal) throws IOException;
+   CourseResponse getById(Long id);
 
-    CourseDTO getById(Long id);
+   List<CourseResponse> getAll();
 
-    List<CourseDTO> getAll();
+   CourseResponse update(Long id, CourseRequest request) throws IOException;
 
-    CourseDTO update(Long id, CourseDTO dto);
+   void delete(Long id);
 
-    void delete(Long id);
+   void publishCourse(Long courseId);
 }
