@@ -4,7 +4,6 @@ import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.jwt.*;
 import com.bidemy.mapper.UserMapper;
-import com.bidemy.model.dto.CategoryDTO;
 import com.bidemy.model.dto.UserDTO;
 import com.bidemy.model.entity.User;
 import com.bidemy.model.response.CategoryResponse;
@@ -44,19 +43,19 @@ public class RestAuthController {
     private final JwtService jwtService;
     private final UserDetailsService userDetailsService;
 
-    @PostMapping({"/register"})
+    @PostMapping("/register")
     public String register(@RequestBody @Valid RegisterRequest request, HttpSession session) {
         UserDTO userDTO = authService.register(request);
         session.setAttribute("currentUser", userDTO);
         return "home";
     }
 
-    @PostMapping({"/authenticate"})
+    @PostMapping("/authenticate")
     public String authenticate(@ModelAttribute @Valid AuthRequest request, Model model, HttpSession session, HttpServletResponse response) {
         authService.authenticate(request);
         User user = userRepository.findByEmail(request.getEmail()).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
         UserDetails userDetails = userDetailsService.loadUserByUsername(user.getEmail());
-        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, (Object)null, userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
         String jwtToken = jwtService.generateToken(user);
         System.out.println("JWT Token: " + jwtToken);
@@ -69,7 +68,7 @@ public class RestAuthController {
         return "redirect:/home";
     }
 
-    @GetMapping({"/logout"})
+    @GetMapping("/logout")
     public String logout(HttpServletResponse response) {
         Cookie jwtCookie = new Cookie("jwt", "");
         jwtCookie.setMaxAge(0);
@@ -79,7 +78,7 @@ public class RestAuthController {
         return "redirect:/login";
     }
 
-    @PostMapping({"/refreshToken"})
+    @PostMapping("/refreshToken")
     public AuthResponse refreshToken(@RequestBody @Valid RefreshTokenRequest request) {
         return refreshTokenService.refreshToken(request);
     }
