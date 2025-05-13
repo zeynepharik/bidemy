@@ -34,14 +34,13 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AUTHENTICATE, REGISTER, REFRESH_TOKEN,  "/login", "/css/**", "/images/**").permitAll()
-                        .requestMatchers("/**").hasRole("USER")
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authEntryPoint)
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
@@ -54,6 +53,5 @@ public class SecurityConfig {
 
         return http.build();
     }
-
 
 }
