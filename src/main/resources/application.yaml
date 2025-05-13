@@ -8,6 +8,13 @@ spring:
     password: 1
     driver-class-name: org.postgresql.Driver
 
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 4GB
+      max-request-size: 4GB
+
+
   jpa:
     hibernate:
       ddl-auto: update
@@ -17,5 +24,10 @@ logging:
     root: INFO
     com.bidemy: DEBUG
 
-file:
-  upload-dir: C:\Users\Zeynep\Documents\uploads
+video:
+  storage:
+    path: C:/Users/Zeynep/Documents/uploads
+
+image:
+  storage:
+    path: C:/Users/Zeynep/Documents/course_images
