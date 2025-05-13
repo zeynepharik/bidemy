@@ -7,16 +7,26 @@ import static org.springframework.http.HttpStatus.BAD_REQUEST;
 
 @Getter
 public enum BusinessValidationRule implements IBusinessValidationRule{
-    COURSE_NOT_FOUND("1000","Course bulunamadı"),
-    COURSE_TİTLE_REQUİRED("1001","Course title boş olamaz"),
-    FILE_IS_EMPTY("1002","Dosya boş." ),
-    CATEGORY_NOT_FOUND("2000","Category bulunamadı"),
-    USER_NOT_FOUND("3000","User bulunamadı"),
-    USER_EMAİL_REQUİRED("3001","User email boş olamaz"),
-    VİDEO_NOT_FOUND("4000","Video bulunamadı"),
-    VİDEO_TİTLE_REQUİRED("4001","Video başlığı boş olamaz"),
-    INVALID_FILE_TYPE("1004","Formata uygun değil" ),
-    FILE_TOO_LARGE("1005","File dosyasının büyüklüğü fazla." );
+    COURSE_NOT_FOUND("1000", "Course bulunamadı"),
+    COURSE_TİTLE_REQUİRED("1001", "Course title boş olamaz"),
+    FILE_IS_EMPTY("1002", "Dosya boş."),
+    CATEGORY_NOT_FOUND("2000", "Category bulunamadı"),
+    USER_NOT_FOUND("3000", "User bulunamadı"),
+    USER_EMAİL_REQUİRED("3001", "User email boş olamaz"),
+    VİDEO_NOT_FOUND("4000", "Video bulunamadı"),
+    VİDEO_TİTLE_REQUİRED("4001", "Video başlığı boş olamaz"),
+    INVALID_FILE_TYPE("1004", "Formata uygun değil"),
+    FILE_TOO_LARGE("1005", "File dosyasının büyüklüğü fazla."),
+    SECTION_NOT_FOUND("5000", "Section bulunamadı"),
+    LESSON_NOT_FOUND("6000", "Lesson bulunamadı"),
+    CURRICULUM_NOT_FOUND("7000", "Curriculum Item bulunamadı"),
+    INVALID_CURRICULUM_ITEM_TYPE("7001", "Curriculum türü bulunamadı"),
+    EXAM_NOT_FOUND("8000", "Exam bulunamadı"),
+    HOMEWORK_NOT_FOUND("9000", "Homework bulunamadı"),
+    CODING_ASSIGNMENT_NOT_FOUND("9001", "Coding Assignment bulunamadı"),
+    CONTENT_NOT_FOUND("9002", "Content bulunamadı"),
+    INVALID_CONTENT_TYPE("9003", "Content türü bulunamadı");
+
 
 
     private static final String DEFAULT_CODE = "SYSTEM";
