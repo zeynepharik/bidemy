@@ -4,7 +4,6 @@ import com.bidemy.jwt.AuthRequest;
 import com.bidemy.jwt.RegisterRequest;
 import com.bidemy.service.ICategoryService;
 import com.bidemy.service.ICourseService;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -17,7 +16,7 @@ public class HomeController {
     private final ICategoryService categoryService;
 
     @GetMapping({"/home"})
-    public String home(Model model, HttpSession session) {
+    public String home(Model model) {
         model.addAttribute("courses", courseService.getAll());
         model.addAttribute("categories", categoryService.getAll());
         return "home";
