@@ -19,10 +19,10 @@
     <p>Kursunuz için bir fiyat belirleyin.<br>
       Lütfen kursunuz için <strong>Minimum 250 TL</strong> ve <strong>Maksimum 3.000 TL</strong> olarak seçin.</p>
 
-    <form th:action="@{/instructor/courses/manage/pricing/save}" method="post" th:object="${courseDTO}">
+    <form th:action="@{/instructor/courses/manage/pricing/save}" method="post" >
       <div class="mb-4">
         <label for="price" class="form-label">Fiyat (TL)</label>
-        <input type="number" min="250" max="3000" step="1" class="form-control" id="price" th:field="*{price}" placeholder="Kurs fiyatını girin.">
+        <input type="number" min="250" max="3000" step="1" class="form-control" id="price"  placeholder="Kurs fiyatını girin.">
       </div>
       <button type="submit" class="btn text-white" style="background-color: #6f42c1;">Kaydet</button>
     </form>

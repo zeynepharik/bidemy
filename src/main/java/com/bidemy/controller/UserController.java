@@ -1,7 +1,6 @@
 package com.bidemy.controller;
 
 import com.bidemy.model.dto.UserDTO;
-import com.bidemy.model.entity.UserRequest;
 import com.bidemy.model.request.*;
 import com.bidemy.service.ICategoryService;
 import com.bidemy.service.ISectionService;
