@@ -19,7 +19,7 @@ public class SectionController {
     private final ICourseService courseService;
 
     @PostMapping("/save")
-    public String create(@RequestBody @Valid SectionRequest request) {
+    public String create(@ModelAttribute @Valid SectionRequest request) {
         sectionService.createSection(request);
         courseService.publishCourse(request.getCourseId());
         return "redirect:/instructor/courses";
@@ -36,7 +36,7 @@ public class SectionController {
     }
 
     @PutMapping("/{id}")
-    public SectionResponse update(@PathVariable Long id, @RequestBody @Valid SectionRequest request) {
+    public SectionResponse update(@PathVariable Long id,  @Valid SectionRequest request) {
         return sectionService.updateSection(id, request);
     }
 
