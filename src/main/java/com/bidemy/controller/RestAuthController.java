@@ -44,7 +44,7 @@ public class RestAuthController {
     private final UserDetailsService userDetailsService;
 
     @PostMapping("/register")
-    public String register(@RequestBody @Valid RegisterRequest request, HttpSession session) {
+    public String register(@ModelAttribute @Valid RegisterRequest request, HttpSession session) {
         UserDTO userDTO = authService.register(request);
         session.setAttribute("currentUser", userDTO);
         return "home";
