@@ -33,27 +33,27 @@ public class SecurityConfig {
 
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers(AUTHENTICATE, REGISTER, REFRESH_TOKEN,  "/login", "/css/**", "/images/**").permitAll()
+//                        .requestMatchers(AUTHENTICATE, REGISTER, REFRESH_TOKEN,  "/login", "/css/**", "/images/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(ex -> ex
                         .authenticationEntryPoint(authEntryPoint)
                 )
                 .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
-                )
-                .formLogin(form -> form
-                        .loginPage("/login")
-                        .defaultSuccessUrl("/home", true)
-                        .permitAll()
-                )
-                .authenticationProvider(authenticationProvider)
-                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .logout(logout -> logout
-                        .logoutUrl("/logout")
-                        .logoutSuccessUrl("/login?logout")
-                        .invalidateHttpSession(true)
-                        .clearAuthentication(true));
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                );
+//                .formLogin(form -> form
+//                        .loginPage("/login")
+//                        .defaultSuccessUrl("/home", true)
+//                        .permitAll()
+//                )
+//                .authenticationProvider(authenticationProvider)
+//                .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
+//                .logout(logout -> logout
+//                        .logoutUrl("/logout")
+//                        .logoutSuccessUrl("/login?logout")
+//                        .invalidateHttpSession(true)
+//                        .clearAuthentication(true));
 
 
         return http.build();
