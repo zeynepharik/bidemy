@@ -60,6 +60,12 @@ public class UserServiceImpl implements IUserService {
         return userMapper.toDTO(user);
     }
 
+    public UserDTO getUserByEmail(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
+        return userMapper.toDTO(user);
+    }
+
     public void delete(Long id) {
         User user = userRepository.findById(id)
                 .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
