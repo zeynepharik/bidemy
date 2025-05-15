@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -38,7 +37,7 @@ public class CategoryServiceImpl implements ICategoryService {
     }
 
     public List<CategoryResponse> getAll() {
-        return categoryRepository.findAll().stream().map(categoryMapper::toResponse).collect(Collectors.toList());
+        return categoryRepository.findAll().stream().map(categoryMapper::toResponse).toList();
     }
 
     public CategoryResponse update(Long id, CategoryRequest request) {

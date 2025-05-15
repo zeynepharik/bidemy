@@ -50,7 +50,7 @@ public class LessonServiceImpl implements ILessonService {
         return lessonRepository.findAllBySectionId(sectionId)
                 .stream()
                 .map(lessonMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public LessonResponse updateLesson(Long lessonId, LessonRequest lessonRequest) {

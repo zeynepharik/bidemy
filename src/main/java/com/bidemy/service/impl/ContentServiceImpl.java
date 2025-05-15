@@ -29,7 +29,6 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -70,7 +69,7 @@ public class ContentServiceImpl implements IContentService {
     }
 
     public List<ContentResponse> getAllContentByLessonId(Long lessonId) {
-        return contentRepository.findAllByLesson_Id(lessonId).stream().map(contentMapper::toResponse).collect(Collectors.toList());
+        return contentRepository.findAllByLesson_Id(lessonId).stream().map(contentMapper::toResponse).toList();
 
     }
 
