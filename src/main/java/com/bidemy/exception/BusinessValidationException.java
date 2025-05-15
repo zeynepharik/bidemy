@@ -4,7 +4,7 @@ import lombok.Getter;
 
 @Getter
 public class BusinessValidationException extends RuntimeException {
-    private final IBusinessValidationRule rule;
+    private final transient IBusinessValidationRule rule;
 
     public BusinessValidationException(IBusinessValidationRule rule) {
         super(rule.getMessage());
