@@ -48,7 +48,7 @@ public class ContentServiceImpl implements IContentService {
         try {
             videoUrl = saveVideoFile(request.getBase64Video());
         } catch (IOException e) {
-            throw new RuntimeException("Video yüklenirken hata oluştu: " + e.getMessage());
+            throw new BusinessValidationException(BusinessValidationRule.VIDEO_UPLOAD_FAILED);
         }
 
         VideoContent videoContent = new VideoContent();
