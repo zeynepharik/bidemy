@@ -25,7 +25,8 @@ public enum BusinessValidationRule implements IBusinessValidationRule {
     HOMEWORK_NOT_FOUND("9000", "Homework bulunamadı"),
     CODING_ASSIGNMENT_NOT_FOUND("9001", "Coding Assignment bulunamadı"),
     CONTENT_NOT_FOUND("9002", "Content bulunamadı"),
-    INVALID_CONTENT_TYPE("9003", "Content türü bulunamadı");
+    INVALID_CONTENT_TYPE("9003", "Content türü bulunamadı"),
+    INVALID_CREDENTIALS("9004","E-posta adresi veya şifre hatalı" );
 
 
     private static final String DEFAULT_CODE = "SYSTEM";
