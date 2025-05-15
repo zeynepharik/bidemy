@@ -71,7 +71,7 @@ public class ExamServiceImpl implements IExamService {
     }
 
     public List<ExamResponse> getExamsByLessonId(Long lessonId) {
-        return examRepository.findByLessonId(lessonId).stream().map(examMapper::toExamResponse).collect(Collectors.toList());
+        return examRepository.findByLessonId(lessonId).stream().map(examMapper::toExamResponse).toList();
     }
 
     private void syncQuestions(Exam exam, List<QuestionDTO> questionDTOs) {

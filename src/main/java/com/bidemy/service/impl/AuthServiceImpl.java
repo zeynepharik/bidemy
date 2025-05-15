@@ -1,5 +1,7 @@
 package com.bidemy.service.impl;
 
+import com.bidemy.exception.BusinessValidationException;
+import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.jwt.AuthRequest;
 import com.bidemy.jwt.AuthResponse;
 import com.bidemy.jwt.JwtService;
@@ -42,19 +44,24 @@ public class AuthServiceImpl implements IAuthService {
 
     public AuthResponse authenticate(AuthRequest authRequest) {
         try {
-            UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
+            UsernamePasswordAuthenticationToken authentication =
+                    new UsernamePasswordAuthenticationToken(authRequest.getEmail(), authRequest.getPassword());
             authenticationProvider.authenticate(authentication);
 
-            Optional<User> user = userRepository.findByEmail(authRequest.getEmail());
-            String accessToken = jwtService.generateToken(user.get());
-            RefreshToken refreshToken = createRefreshToken(user.get());
+            User user = userRepository.findByEmail(authRequest.getEmail())
+                    .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.USER_NOT_FOUND));
+
+            String accessToken = jwtService.generateToken(user);
+            RefreshToken refreshToken = createRefreshToken(user);
             refreshTokenRepository.save(refreshToken);
-            return new AuthResponse(refreshToken.getRefreshToken(),accessToken );
-        } catch (Exception e) {
-            System.out.println("Kullanıcı adı veya şifre hatalı ");
-            return null;
+
+            return new AuthResponse(refreshToken.getRefreshToken(), accessToken);
+
+        } catch (Exception ex) {
+            throw new BusinessValidationException(BusinessValidationRule.INVALID_CREDENTIALS);
         }
     }
+
 
     public UserDTO register(RegisterRequest request) {
         UserDTO dto = new UserDTO();

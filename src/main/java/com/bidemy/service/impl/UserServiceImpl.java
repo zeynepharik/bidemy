@@ -44,7 +44,7 @@ public class UserServiceImpl implements IUserService {
         return userRepository.findAll()
                 .stream()
                 .map(userMapper::toDTO)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public UserDTO update(Long id, UserRequest request) {

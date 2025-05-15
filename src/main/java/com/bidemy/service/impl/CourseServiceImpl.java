@@ -25,7 +25,6 @@ import java.nio.file.Paths;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -93,7 +92,7 @@ public class CourseServiceImpl implements ICourseService {
     public List<CourseResponse> getAll() {
         return courseRepository.findAll().stream()
                 .map(courseMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public void delete(Long id) {

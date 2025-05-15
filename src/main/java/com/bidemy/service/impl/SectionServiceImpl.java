@@ -17,7 +17,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -49,7 +48,7 @@ public class SectionServiceImpl implements ISectionService {
         List<Section> sections = sectionRepository.findAllByCourseId(courseId);
         return sections.stream()
                 .map(sectionMapper::toResponse)
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public SectionResponse updateSection(Long id, SectionRequest request) {
