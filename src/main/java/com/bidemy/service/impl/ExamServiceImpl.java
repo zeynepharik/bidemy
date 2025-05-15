@@ -2,6 +2,7 @@ package com.bidemy.service.impl;
 
 import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
+import com.bidemy.mapper.ExamMapper;
 import com.bidemy.model.dto.OptionDTO;
 import com.bidemy.model.dto.QuestionDTO;
 import com.bidemy.model.entity.Exam;
