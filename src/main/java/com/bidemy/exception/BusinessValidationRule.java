@@ -16,6 +16,8 @@ public enum BusinessValidationRule implements IBusinessValidationRule {
     VIDEO_NOT_FOUND("4000", "Video bulunamadı"),
     VIDEO_TITLE_REQUIRED("4001", "Video başlığı boş olamaz"),
     VIDEO_UPLOAD_FAILED("4002","Video yüklenirken hata oluştu"),
+    IMAGE_UPLOAD_FAILED("4003","Resim yüklenemedi: %s"),
+    IMAGE_UPDATE_FAILED("4004","Resim güncellenemedi: %s"),
     INVALID_FILE_TYPE("1004", "Formata uygun değil"),
     FILE_TOO_LARGE("1005", "File dosyasının büyüklüğü fazla."),
     SECTION_NOT_FOUND("5000", "Section bulunamadı"),
