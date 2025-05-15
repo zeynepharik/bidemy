@@ -2,6 +2,7 @@ package com.bidemy.service.impl;
 
 import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
+import com.bidemy.mapper.ContentMapper;
 import com.bidemy.model.entity.ArticleContent;
 import com.bidemy.model.entity.Content;
 import com.bidemy.model.entity.Lesson;
