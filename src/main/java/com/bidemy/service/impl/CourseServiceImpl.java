@@ -45,7 +45,7 @@ public class CourseServiceImpl implements ICourseService {
             try {
                 pictureUrl = saveImageFile(request.getBase64Image());
             } catch (IOException e) {
-                throw new RuntimeException("Resim yüklenemedi: " + e.getMessage());
+                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPLOAD_FAILED);
             }
         }
 
@@ -69,7 +69,7 @@ public class CourseServiceImpl implements ICourseService {
                 String newImageUrl = saveImageFile(request.getBase64Image(), course.getPictureUrl());
                 course.setPictureUrl(newImageUrl);
             } catch (IOException e) {
-                throw new RuntimeException("Resim güncellenemedi: " + e.getMessage());
+                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPDATE_FAILED);
             }
         }
 
