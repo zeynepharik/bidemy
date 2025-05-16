@@ -10,7 +10,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoContentRequest extends ContentRequest {
+public class VideoContentRequest {
+    @NotBlank(message = "Description is required")
+    private String description;
+    private Long lessonId;
     @NotBlank(message = "New video content (base64) cannot be blank")
     private String base64Video;
 }
