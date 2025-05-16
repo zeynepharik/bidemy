@@ -7,6 +7,7 @@ import com.bidemy.service.ISectionService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -19,7 +20,7 @@ public class SectionController {
     private final ICourseService courseService;
 
     @PostMapping("/save")
-    public String create(@ModelAttribute @Valid SectionRequest request) {
+    public String create(@ModelAttribute("sections") SectionRequest request, Model model) {
         sectionService.createSection(request);
         courseService.publishCourse(request.getCourseId());
         return "redirect:/instructor/courses";
