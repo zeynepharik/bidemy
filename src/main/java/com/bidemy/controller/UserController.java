@@ -2,10 +2,12 @@ package com.bidemy.controller;
 
 import com.bidemy.model.dto.UserDTO;
 import com.bidemy.model.request.*;
+import com.bidemy.model.response.SectionResponse;
 import com.bidemy.service.ICategoryService;
 import com.bidemy.service.ISectionService;
 import com.bidemy.service.IUserService;
 import com.bidemy.service.impl.CategoryServiceImpl;
+import com.bidemy.service.impl.SectionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -21,6 +23,7 @@ public class UserController {
     private final ISectionService iSectionService;
     private final ICategoryService iCategoryService;
     private final CategoryServiceImpl categoryServiceImpl;
+    private final SectionServiceImpl sectionServiceImpl;
 
     @GetMapping("/instructor/courses")
     public String showInstructorCoursesPage(Model model) {
@@ -47,11 +50,7 @@ public class UserController {
     @GetMapping("/instructor/courses/manage/curriculum")
     public String showCurriculumPage(@RequestParam("courseId") Long courseId, Model model) {
 //        model.addAttribute("courseId", courseId);
-        model.addAttribute("sections", new SectionRequest());
-//        model.addAttribute("lesson", new LessonRequest());
-//        model.addAttribute("article", new ArticleContentRequest());
-//        model.addAttribute("video", new VideoContentRequest());
-//        model.addAttribute("exam", new ExamRequest());
+        model.addAttribute("section", new SectionRequest());
         model.addAttribute("active", "curriculum");
         return "curriculum";
     }
