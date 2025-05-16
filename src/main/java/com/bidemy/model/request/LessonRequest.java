@@ -21,6 +21,6 @@ public class LessonRequest {
     @Valid
     private List<ExamRequest> exams;
 
-    @Valid
-    private ContentRequest content;
+    private ArticleContentRequest articleContentRequest;
+    private VideoContentRequest videoContentRequest;
 }
