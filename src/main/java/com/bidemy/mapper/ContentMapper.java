@@ -3,7 +3,8 @@ package com.bidemy.mapper;
 import com.bidemy.model.entity.ArticleContent;
 import com.bidemy.model.entity.Content;
 import com.bidemy.model.entity.VideoContent;
-import com.bidemy.model.request.ContentRequest;
+import com.bidemy.model.request.ArticleContentRequest;
+import com.bidemy.model.request.VideoContentRequest;
 import com.bidemy.model.response.ArticleContentResponse;
 import com.bidemy.model.response.ContentResponse;
 import com.bidemy.model.response.VideoContentResponse;
@@ -29,5 +30,8 @@ public interface ContentMapper {
         }
     }
 
-    Content toEntity(@Valid ContentRequest content);
+    VideoContent toVideoEntity(@Valid VideoContentRequest request);
+
+    ArticleContent toArticleEntity(@Valid ArticleContentRequest request);
+
 }
