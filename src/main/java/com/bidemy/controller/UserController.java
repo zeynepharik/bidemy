@@ -46,12 +46,12 @@ public class UserController {
 
     @GetMapping("/instructor/courses/manage/curriculum")
     public String showCurriculumPage(@RequestParam("courseId") Long courseId, Model model) {
-        model.addAttribute("courseId", courseId);
+//        model.addAttribute("courseId", courseId);
         model.addAttribute("sections", new SectionRequest());
-        model.addAttribute("lesson", new LessonRequest());
-        model.addAttribute("article", new ArticleContentRequest());
-        model.addAttribute("video", new VideoContentRequest());
-        model.addAttribute("exam", new ExamRequest());
+//        model.addAttribute("lesson", new LessonRequest());
+//        model.addAttribute("article", new ArticleContentRequest());
+//        model.addAttribute("video", new VideoContentRequest());
+//        model.addAttribute("exam", new ExamRequest());
         model.addAttribute("active", "curriculum");
         return "curriculum";
     }
