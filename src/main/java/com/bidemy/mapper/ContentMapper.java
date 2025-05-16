@@ -34,4 +34,7 @@ public interface ContentMapper {
 
     ArticleContent toArticleEntity(@Valid ArticleContentRequest request);
 
+    ArticleContent toEntity(ArticleContentRequest request);
+    VideoContent toEntity(VideoContentRequest request);
+
 }
