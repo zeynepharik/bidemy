@@ -9,10 +9,11 @@ import com.bidemy.model.entity.Question;
 import com.bidemy.model.request.ExamRequest;
 import com.bidemy.model.response.ExamResponse;
 import org.mapstruct.AfterMapping;
+import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 
 import java.util.List;
-
+@Mapper(componentModel = "spring")
 public interface ExamMapper {
     @Mapping(source = "lesson.id", target = "lessonId")
     ExamDTO toExamDTO(Exam exam);
