@@ -14,5 +14,6 @@ public class LessonResponse {
     private Long id;
     private String title;
     private List<ExamResponse> exams;
-    private ContentResponse content;
+    private ArticleContentResponse articleContentResponse;
+    private VideoContentResponse videoContentResponse;
 }

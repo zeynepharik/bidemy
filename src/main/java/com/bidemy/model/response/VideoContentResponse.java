@@ -9,7 +9,10 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class VideoContentResponse extends ContentResponse {
+public class VideoContentResponse  {
+    private Long id;
+    private String description;
+    private Long lessonId;
     private String videoUrl;
 
 }

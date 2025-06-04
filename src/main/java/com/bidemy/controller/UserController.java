@@ -1,12 +1,19 @@
 package com.bidemy.controller;
 
+import com.bidemy.mapper.CourseMapper;
+import com.bidemy.model.dto.OptionDTO;
+import com.bidemy.model.dto.QuestionDTO;
 import com.bidemy.model.dto.UserDTO;
+import com.bidemy.model.entity.*;
 import com.bidemy.model.request.*;
+import com.bidemy.model.response.CourseResponse;
 import com.bidemy.model.response.SectionResponse;
 import com.bidemy.service.ICategoryService;
+import com.bidemy.service.ICourseService;
 import com.bidemy.service.ISectionService;
 import com.bidemy.service.IUserService;
 import com.bidemy.service.impl.CategoryServiceImpl;
+import com.bidemy.service.impl.CourseServiceImpl;
 import com.bidemy.service.impl.SectionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -14,6 +21,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -24,6 +32,8 @@ public class UserController {
     private final ICategoryService iCategoryService;
     private final CategoryServiceImpl categoryServiceImpl;
     private final SectionServiceImpl sectionServiceImpl;
+    private final ICourseService courseService;
+    private final CourseMapper courseMapper;
 
     @GetMapping("/instructor/courses")
     public String showInstructorCoursesPage(Model model) {
@@ -49,11 +59,45 @@ public class UserController {
 
     @GetMapping("/instructor/courses/manage/curriculum")
     public String showCurriculumPage(@RequestParam("courseId") Long courseId, Model model) {
-//        model.addAttribute("courseId", courseId);
-        model.addAttribute("section", new SectionRequest());
+
+        CourseResponse courseResponse = courseService.getById(courseId);
+        CourseRequest courseRequest = courseMapper.toCourseRequest(courseResponse);
+
+        for (SectionRequest section : courseRequest.getSections()) {
+            if (section.getLessonList() != null) {
+                for (LessonRequest lesson : section.getLessonList()) {
+                    if (lesson.getExams() == null || lesson.getExams().isEmpty()) {
+                        ExamRequest emptyExam = new ExamRequest();
+                        emptyExam.setTitle("");
+                        emptyExam.setDescription("");
+                        emptyExam.setPlaceholder(true);
+
+                        QuestionDTO emptyQuestion = new QuestionDTO();
+                        emptyQuestion.setText("");
+                        emptyQuestion.setPlaceholder(true);
+
+                        OptionDTO emptyOption = new OptionDTO();
+                        emptyOption.setText("");
+                        emptyOption.setIsCorrect(false);
+                        emptyOption.setPlaceholder(true);
+
+                        emptyQuestion.setOptions(List.of(emptyOption));
+                        emptyExam.setQuestionsList(List.of(emptyQuestion));
+
+                        lesson.setExams(List.of(emptyExam));
+                    }
+                }
+            }
+        }
+
+
+        model.addAttribute("course", courseRequest);
         model.addAttribute("active", "curriculum");
+
         return "curriculum";
     }
+
+
 
     @GetMapping("/instructor/courses/manage/basics")
     public String showBasicsPage(Model model) {

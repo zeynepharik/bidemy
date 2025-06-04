@@ -9,6 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleContentResponse extends ContentResponse {
+public class ArticleContentResponse {
+    private Long id;
+    private String description;
+    private Long lessonId;
     private String text;
 }

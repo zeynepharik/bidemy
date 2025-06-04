@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -26,5 +27,7 @@ public class ExamRequest {
     private Long lessonId;
 
     @Valid
-    private List<QuestionDTO> questionsList;
+    private List<QuestionDTO> questionsList = new ArrayList<>();
+
+    private Boolean placeholder = false;
 }

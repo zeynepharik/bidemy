@@ -30,13 +30,30 @@ public class SectionServiceImpl implements ISectionService {
     public SectionResponse createSection(SectionRequest request) {
         Course course = courseRepository.findById(request.getCourseId())
                 .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.COURSE_NOT_FOUND));
-        Section section = sectionMapper.toEntity(request);
-        section.setCourse(course);
+        Section newSection = new Section();
+        newSection.setTitle(request.getTitle());
+        newSection.setCourse(course);
 
-        List<Lesson> lessons = lessonMapper.toLessonEntities(request.getLessonList());
-        section.setLessonList(lessons);
-        return sectionMapper.toResponse(sectionRepository.save(section));
+        List<Lesson> lessons;
+        if (request.getLessonList() == null || request.getLessonList().isEmpty()) {
+            Lesson defaultLesson = new Lesson();
+            defaultLesson.setTitle("Giriş");
+            defaultLesson.setSection(newSection);
+            lessons = List.of(defaultLesson);
+        } else {
+            lessons = lessonMapper.toLessonEntities(request.getLessonList());
+            for (Lesson lesson : lessons) {
+                lesson.setSection(newSection);
+                lesson.setId(null);
+            }
+        }
+
+        newSection.setLessonList(lessons);
+
+        Section savedSection = sectionRepository.save(newSection);
+        return sectionMapper.toResponse(savedSection);
     }
+
 
     public SectionResponse getSectionById(Long id) {
         Section section = sectionRepository.findById(id)

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -19,8 +20,8 @@ public class LessonRequest {
     private String title;
 
     @Valid
-    private List<ExamRequest> exams;
+    private List<ExamRequest> exams = new ArrayList<>();
 
-    private ArticleContentRequest articleContentRequest;
     private VideoContentRequest videoContentRequest;
+    private ArticleContentRequest articleContentRequest;
 }

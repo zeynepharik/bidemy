@@ -20,10 +20,18 @@ public class SectionController {
     private final ICourseService courseService;
 
     @PostMapping("/save")
-    public String create(@ModelAttribute("sections") SectionRequest request, Model model) {
+    public String create(@ModelAttribute("course") SectionRequest request, Model model) {
         sectionService.createSection(request);
         courseService.publishCourse(request.getCourseId());
         return "redirect:/instructor/courses";
+    }
+
+    @PostMapping(value = "/api", consumes = "application/json", produces = "application/json")
+    @ResponseBody
+    public SectionResponse createJson(@RequestBody @Valid SectionRequest request) {
+        SectionResponse created = sectionService.createSection(request);
+        courseService.publishCourse(request.getCourseId());
+        return created;
     }
 
     @GetMapping("/{id}")

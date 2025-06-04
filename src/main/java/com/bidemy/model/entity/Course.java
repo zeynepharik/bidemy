@@ -21,7 +21,11 @@ public class Course extends Auditable {
 
     private String title;
     private String description;
-    private String pictureUrl;
+
+
+    @Lob
+    @Column(columnDefinition = "TEXT")
+    private String base64Image;
 
     private Double price;
 

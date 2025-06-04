@@ -1,127 +1,374 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8"/>
     <title>Müfredat Oluştur</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-    <link rel="stylesheet" href="/css/side.css">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/styles/github.min.css" rel="stylesheet"/>
+    <link href="https://cdn.quilljs.com/1.3.6/quill.snow.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css"/>
+    <link rel="stylesheet" href="/css/side.css"/>
+    <style>
+        .wrapper {
+            display: flex;
+            width: 100vw;
+            height: 100vh;
+            overflow: hidden;
+            background-color: #f8f9fa;
+        }
+
+        .sidebar {
+            background-color: #fff;
+            border-right: 1px solid #dee2e6;
+            overflow-y: auto;
+            padding: 1rem;
+        }
+
+        .content {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: auto;
+            padding: 1rem 2rem;
+            background-color: #fff;
+        }
+
+        #sections-container .card {
+            width: 100%;
+            min-width: 600px;
+        }
+
+        .theme-icon {
+            color: inherit;
+            color: #212529;
+        }
+
+        .btn-purple {
+            background-color: #6f42c1;
+            border-color: #6f42c1;
+            color: white;
+        }
+
+        .btn-purple:hover {
+            background-color: #5a3299;
+            border-color: #5a3299;
+            color: white;
+        }
+
+        .btn-outline-purple {
+            color: #6f42c1;
+            border-color: #6f42c1;
+        }
+
+        .btn-outline-purple:hover {
+            background-color: #6f42c1;
+            color: white;
+            border-color: #6f42c1;
+        }
+
+        .btn-purple-filled {
+            background-color: #6f42c1;
+            color: white;
+            border: 1px solid #6f42c1;
+        }
+
+        .btn-purple-filled:hover {
+            background-color: #5a3299;
+            border-color: #5a3299;
+            color: white;
+        }
+
+        .quill-editor {
+            min-height: 150px;
+            height: auto;
+            background-color: white;
+            border: 1px solid #ced4da;
+            border-radius: 0.375rem;
+            padding: 10px;
+        }
+    </style>
 </head>
+
 <body class="bg-light">
 <div th:replace="fragments/courses-navbar :: navbar"></div>
 <div class="wrapper">
-    <div th:insert="fragments/sidebar :: instructorSidebar('curriculum')"></div>
-
-    <form method="post" th:action="@{/sections/save}" th:object="${sections}">
-        <input type="hidden" id="sectionId" th:value="${sectionId}" />
-        <div class="container my-4" id="sections-container">
+    <div class="sidebar" th:insert="fragments/sidebar :: instructorSidebar('curriculum')"></div>
+    <form method="post" th:action="@{/courses/manage/curriculum/save}" th:object="${course}" class="content">
+        <input type="hidden" th:field="*{id}"/>
+        <input type="hidden" id="sectionId" th:value="${sectionId}"/>
+        <div class="container-fluid my-4 p-0" id="sections-container">
             <h4 class="fw-semibold" style="font-family: Georgia, Times, serif; margin-left: 20px;">Müfredat</h4>
-            <hr class="w-150 border-1 opacity-75">
-
-            <div class="section-container">
+            <hr class="w-150 border-1 opacity-75"/>
+            <div th:each="section, sectionStat : ${course.sections}" class="section-container"
+                 th:attr="data-section-index=${sectionStat.index}">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Bölüm 1: Giriş</h5>
+                        <h5 th:text="'Bölüm ' + (${sectionStat.index} + 1) + ': ' + ${section.title}"
+                            class="card-title"></h5>
+                        <div th:each="lesson, iterStat : ${section.lessonList}" class="mb-4">
+                            <div class="border rounded p-3 d-flex justify-content-between align-items-start gap-3">
+                                <div class="d-flex align-items-center gap-2">
+                                    <span th:text="|Ders ${iterStat.index + 1}:|">Ders:</span>
+                                    <span th:id="|lesson-title-${sectionStat.index}-${iterStat.index}|"
+                                          th:text="${lesson.title}"></span>
+                                    <button type="button"
+                                            class="btn btn-link p-0"
+                                            th:onclick="|toggleEditPanel(${sectionStat.index}, ${iterStat.index})|"
+                                            aria-label="Düzenle">
+                                        <i class="bi bi-pencil theme-icon"></i>
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-link p-0"
+                                            th:onclick="|removeLesson(${iterStat.index})|"
+                                            aria-label="Sil">
+                                        <i class="bi bi-trash3 theme-icon"></i>
+                                    </button>
+                                </div>
+                                <div class="d-none d-flex align-items-center bg-light rounded px-3 py-1 ms-auto"
+                                     style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                     th:id="|lesson-content-summary-${sectionStat.index}-${iterStat.index}|"
+                                     data-content-type="article">
+                                    <span class="flex-grow-1 text-truncate me-2" style="max-width: 170px;"></span>
 
-                        <div class="border rounded p-3 mb-3 d-flex justify-content-between align-items-center"
-                             th:each="lesson, iterStat : *{lessonList}">
+                                    <button type="button" class="btn btn-link btn-sm p-0"
+                                            th:onclick="|toggleContentOptionsFromDisplay(${sectionStat.index}, ${iterStat.index})|"
+                                            aria-label="Makaleyi Düzenle">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
 
-                            <div class="d-flex align-items-center gap-2">
-                                <span th:text="'Ders ' + ${iterStat.index + 1} + ':'">Ders:</span>
-                                <input type="text" class="form-control form-control-sm" th:field="*{lessonList[__${iterStat.index}__].title}" readonly style="width: 200px;">
-                                <span class="text-primary" role="button">&#9998;</span>
-                                <span class="text-danger" role="button">&#10060;</span>
+                                    <button type="button" class="btn btn-link btn-sm p-0"
+                                            th:onclick="|clearArticleContent(${sectionStat.index}, ${iterStat.index})|"
+                                            aria-label="Makaleyi Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+                                <div class="d-none d-flex align-items-center bg-light rounded px-3 py-1 ms-auto"
+                                     style="max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;"
+                                     th:id="|lesson-video-summary-${sectionStat.index}-${iterStat.index}|"
+                                     data-content-type="video">
+                                    <span class="flex-grow-1 text-truncate me-2" style="max-width: 170px;"></span>
+                                    <button type="button" class="btn btn-link btn-sm p-0"
+                                            th:onclick="|toggleContentOptionsFromDisplay(${sectionStat.index}, ${iterStat.index})|"
+                                            aria-label="Video Düzenle">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-link btn-sm p-0"
+                                            th:onclick="|clearVideoContent(${sectionStat.index}, ${iterStat.index})|"
+                                            aria-label="Video Sil">
+                                        <i class="bi bi-trash3"></i>
+                                    </button>
+                                </div>
+
+                                <div style="min-width: 10px; text-align: right;">
+                                    <button class="btn btn-sm btn-outline-purple"
+                                            type="button"
+                                            onclick="toggleContentOptions(this)"
+                                            th:id="|toggle-btn-${sectionStat.index}-${iterStat.index}|"
+                                            th:attr="data-index=${sectionStat.index + '-' + iterStat.index}">
+                                        + İçerik
+                                    </button>
+                                </div>
+
                             </div>
-
-                            <div>
-                                <button class="btn btn-sm btn-outline-primary" onclick="toggleContentOptions(this)">+
-                                    İçerik
-                                </button>
-                                <div class="mt-2 p-2 border rounded bg-white d-none content-panel">
-                                    <div class="mb-2">
-                                        <button class="btn btn-sm btn-secondary me-2"
+                            <div th:id="|content-panel-${sectionStat.index}-${iterStat.index}|"
+                                 class="mt-2 p-2 border rounded bg-white d-none content-panel w-100 d-flex">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <div class="option-buttons">
+                                        <button class="btn btn-sm btn-secondary me-2" type="button"
                                                 onclick="toggleSpecificPanel(this, 'article')">Makale
                                         </button>
-                                        <button class="btn btn-sm btn-secondary"
+                                        <button class="btn btn-sm btn-secondary" type="button"
                                                 onclick="toggleSpecificPanel(this, 'video')">Video
                                         </button>
                                     </div>
-                                    <div class="mt-2 video-upload d-none">
-                                        <h6>Video Yükle</h6>
-                                        <input type="file" class="form-control" accept="video/*" onchange="encodeVideo(this)">
-                                        <input type="hidden" th:field="*{lessonList[__${iterStat.index}__].videoContentRequest.base64Video}">
-                                        <input type="hidden" th:field="*{lessonList[__${iterStat.index}__].videoContentRequest.lessonId}">
-                                    </div>
-                                    <div class="mt-2 article-panel d-none">
-                                        <label class="form-label">Metin</label>
-                                        <textarea th:field="*{lessonList[__${iterStat.index}__].articleContentRequest.text}" class="form-control mb-2"  placeholder="Açıklama yazın..."></textarea>
-                                        <input type="hidden" th:field="*{lessonList[__${iterStat.index}__].articleContentRequest.lessonId}">
-                                        <button class="btn btn-success btn-sm">Kaydet</button>
-                                    </div>
+                                    <button type="button" class="btn-close" aria-label="Kapat"
+                                            onclick="closeContentPanel(this)"></button>
+                                </div>
+                                <div class="mt-2 video-upload d-none w-100">
+                                    <h6>Video Yükle</h6>
+                                    <input type="file" class="form-control" accept="video/*"
+                                           onchange="encodeVideo(this)"/>
+                                    <input type="hidden"
+                                           th:id="|videoBase64-${sectionStat.index}-${iterStat.index}|"
+                                           th:name="|lessonList[${iterStat.index}].videoContentRequest.base64Video|"
+                                    />
+                                    <button type="button" class="btn btn-purple-filled btn-sm float-end mt-2"
+                                            th:onclick="|saveVideoContent('${sectionStat.index}-${iterStat.index}')|">
+                                        Kaydet
+                                    </button>
+                                </div>
+                                <div class="mt-2 article-panel d-none w-100">
+                                    <label th:for="|quill-editor-${iterStat.index}|" class="form-label">Metin</label>
+                                    <textarea th:id="|articleText__${sectionStat.index}-${iterStat.index}|"
+                                              th:name="|lessonList[${iterStat.index}].articleContentRequest.text|"
+                                              class="form-control mb-2"
+                                              placeholder="Açıklama yazın..."></textarea>
+                                    <button type="button" class="btn btn-purple-filled btn-sm float-end"
+                                            th:onclick="|saveArticleContent(${sectionStat.index}, ${iterStat.index})|">
+                                        Kaydet
+                                    </button>
                                 </div>
                             </div>
-                        </div>
-
-                        <button class="btn btn-outline-success mb-3" onclick="toggleCurriculumItemPanel(this)">+ Müfredat
-                            Öğesi
-                        </button>
-                        <div class="d-none mt-2 curriculum-panel">
-                            <div class="d-flex gap-2 mb-3">
-                                <button class="btn btn-outline-primary" onclick="showOnlyPanel(this, 'lesson')">+ Ders
-                                </button>
-                                <button class="btn btn-outline-primary" onclick="showOnlyPanel(this, 'exam')">+ Sınav
-                                </button>
+                            <div th:id="|lesson-edit-panel-${sectionStat.index}-${iterStat.index}|"
+                                 class="d-none">
+                                <input type="text"
+                                       th:id="|lesson-input-${sectionStat.index}-${iterStat.index}|"
+                                       th:value="${lesson.title}"
+                                       class="form-control mb-2"
+                                       placeholder="Ders başlığı"/>
+                                <div class="d-flex gap-2">
+                                    <button type="button"
+                                            class="btn btn-purple btn-sm"
+                                            th:onclick="|saveLesson(${sectionStat.index}, ${iterStat.index})|">Dersi
+                                        Kaydet
+                                    </button>
+                                    <button type="button"
+                                            class="btn btn-secondary btn-sm"
+                                            th:onclick="|cancelEdit(${sectionStat.index}, ${iterStat.index})|">İptal
+                                    </button>
+                                </div>
                             </div>
-
-                            <div class="panel-lesson d-none border p-3 rounded bg-white">
-                                    <label class="form-label">Yeni Ders Başlığı</label>
-                                    <input type="text" class="form-control mb-2" th:field="*{title}" placeholder="Başlık Girin">
+                            <div th:id="|lesson-list-${section.id}|" id="lesson-list-${section.id}"></div>
+                            <div th:id="|exam-list-${sectionStat.index}-${iterStat.index}|" class="mb-4"></div>
+                            <button class="btn btn-outline-success mb-3" type="button"
+                                    onclick="toggleCurriculumItemPanel(this)">+ Müfredat Öğesi
+                            </button>
+                            <div class="d-none mt-2 curriculum-panel">
+                                <div class="d-flex gap-2 mb-3">
+                                    <button class="btn btn-outline-primary" type="button"
+                                            onclick="showOnlyPanel(this, 'lesson')">+ Ders
+                                    </button>
+                                    <button class="btn btn-outline-primary" type="button"
+                                            onclick="showOnlyPanel(this, 'exam')">+ Sınav
+                                    </button>
+                                </div>
+                                <div class="panel-lesson d-none border p-3 rounded bg-white"
+                                     th:id="|panel-lesson-${sectionStat.index}|">
+                                    <label th:for="|newLessonTitleInput-${sectionStat.index}|" class="form-label">Yeni
+                                        Ders Başlığı</label>
+                                    <input th:id="|newLessonTitleInput-${sectionStat.index}|"
+                                           type="text"
+                                           th:value="${lesson.title}"
+                                           class="form-control mb-2"
+                                           placeholder="Başlık Girin"/>
                                     <div class="d-flex gap-2">
-                                        <button class="btn btn-secondary btn-sm" type="button" onclick="hideParentPanel(this)">İptal</button>
-                                        <button class="btn btn-success btn-sm" type="submit">Ders Ekle</button>
+                                        <button class="btn btn-secondary btn-sm" type="button"
+                                                onclick="hideParentPanel(this)">İptal
+                                        </button>
+                                        <button th:onclick="|addNewLesson(this, ${sectionStat.index})|"
+                                                class="btn btn-success btn-sm"
+                                                type="button">Ders Ekle
+                                        </button>
                                     </div>
-                            </div>
+                                </div>
+                                <div th:id="|lesson-edit-panel-${sectionStat.index}-${iterStat.index}|" class="d-none">
+                                    <input type="text"
+                                           th:id="|lesson-input-${iterStat.index}|"
+                                           th:value="${lesson.title}"
+                                           class="form-control mb-2"
+                                           placeholder="Ders başlığı"/>
 
-                            <div th:each="lesson, iterStat : *{lessonList}">
-                                <div  th:each="exam , eStat:*{lessonList[__${iterStat.index}__].exams}" class="panel-exam d-none border p-3 rounded bg-white">
-                                    <label class="form-label">Yeni Test</label>
-                                    <input type="text" th:field="*{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].title}" class="form-control mb-2" placeholder="Başlık Girin">
-                                    <label class="form-label">Açıklama</label>
-
-                                    <textarea th:field="*{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].description}" class="form-control mb-2" placeholder="Açıklama yazın..."></textarea>
-
-                                    <div th:each="question, qStat : *{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].questionsList}"
-                                         class="question-block border rounded p-3 mb-3 bg-light">
-
-                                        <label class="form-label">Soru</label>
-                                        <input type="text" class="form-control mb-2"
-                                               th:field="*{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].questionsList[__${qStat.index}__].text}"
-                                               placeholder="Soru metnini girin" />
-
-                                        <div class="answers-container mb-2"
-                                             th:each="option, oStat : *{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].questionsList[__${qStat.index}__].options}">
-
-                                            <div class="input-group text">
-                                                <div class="input-group-text">
-                                                    <input type="radio"
-                                                           name="questionCorrectOption__${iterStat.index}_${eStat.index}_${qStat.index}"
-                                                           th:checked="${option.isCorrect}"
-                                                           onclick="setCorrectOption(this)" />
+                                    <div class="d-flex gap-2">
+                                        <button type="button"
+                                                class="btn btn-purple btn-sm"
+                                                th:onclick="|saveLesson(${sectionStat.index}, ${iterStat.index})|">Dersi
+                                            Kaydet
+                                        </button>
+                                        <button type="button"
+                                                class="btn btn-secondary btn-sm"
+                                                th:onclick="|cancelEdit(${iterStat.index})|">İptal
+                                        </button>
+                                    </div>
+                                </div>
+                                <div th:each="exam , eStat:${lesson.exams}"
+                                     class="panel-exam d-none border p-3 rounded bg-white">
+                                    <label for="newExamTitle-${sectionStat.index}-${iterStat.index}" class="form-label">Yeni
+                                        Test</label>
+                                    <input type="text"
+                                           id="newExamTitle-${sectionStat.index}-${iterStat.index}"
+                                           th:name="|section.lessonList[${iterStat.index}].exams[${eStat.index}].title|"
+                                           th:value="${exam.title}"
+                                           class="form-control mb-2"
+                                           placeholder="Başlık Girin"/>
+                                    <label for="newExamDesc-${sectionStat.index}-${iterStat.index}"
+                                           class="form-label">Açıklama</label>
+                                    <textarea
+                                            id="newExamDesc-${sectionStat.index}-${iterStat.index}"
+                                            th:name="|section.lessonList[${iterStat.index}].exams[${eStat.index}].description|"
+                                            th:value="${exam.description}"
+                                            class="form-control mb-2"
+                                            placeholder="Açıklama yazın..."></textarea>
+                                    <div class="d-flex justify-content-end">
+                                        <button class="btn btn-success btn-sm" type="button"
+                                                th:onclick="|createExamContainer(this, ${sectionStat.index}, ${iterStat.index})|">
+                                            Sınavı Ekle
+                                        </button>
+                                    </div>
+                                    <div class="question-answer-panel d-none mt-3 position-relative border rounded p-3 bg-light"
+                                         th:id="|question-panel-${iterStat.index}-${eStat.index}|">
+                                        <button type="button" class="btn-close position-absolute top-0 end-0 m-2"
+                                                aria-label="Kapat" onclick="closeQuestionPanel(this)"></button>
+                                        <h6>Soru ve Cevap Ekle</h6>
+                                        <div th:each="question, qStat : ${exam.questionsList}"
+                                             class="question-block border rounded p-3 mb-3 bg-light">
+                                            <label for="questionText_0_1_2" class="form-label">Soru</label>
+                                            <input type="text" id="questionText_0_1_2" class="form-control mb-2"
+                                                   th:field="*{sections[${sectionStat}].lessonList[${iterStat.index}].exams[${eStat.index}].questionsList[${qStat.index}].text}"
+                                                   placeholder="Soru metnini girin"/>
+                                            <div class="answers-container mb-2"
+                                                 th:each="option, oStat : ${question.options}">
+                                                <div class="input-group text">
+                                                    <div class="input-group-text">
+                                                        <input type="radio"
+                                                               name="questionCorrectOption__${iterStat.index}_${eStat.index}_${qStat.index}"
+                                                               th:checked="${option.isCorrect}"
+                                                               onchange="setCorrectOption(this)"/>
+                                                    </div>
+                                                    <input type="text" class="form-control"
+                                                           th:name="|section.lessonList[${iterStat.index}].exams[${eStat.index}].questionsList[${qStat.index}].options[${oStat.index}].text|"
+                                                           th:value="${option.text}"
+                                                           placeholder="Cevap metni girin"/>
+                                                    <input type="hidden"
+                                                           th:name="|section.lessonList[${iterStat.index}].exams[${eStat.index}].questionsList[${qStat.index}].options[${oStat.index}].isCorrect|"
+                                                           th:value="${option.isCorrect}"
+                                                    />
                                                 </div>
-                                                <input type="text" class="form-control"
-                                                       th:field="*{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].questionsList[__${qStat.index}__].options[__${oStat.index}__].text}"
-                                                       placeholder="Cevap metni girin" />
-                                                <input type="hidden"
-                                                       th:field="*{lessonList[__${iterStat.index}__].exams[__${eStat.index}__].questionsList[__${qStat.index}__].options[__${oStat.index}__].isCorrect}" />
+                                            </div>
+                                            <button type="button" class="btn btn-sm btn-outline-secondary"
+                                                    onclick="addAnswer(this)">+ Cevap Ekle
+                                            </button>
+                                            <div class="d-flex justify-content-end">
+                                                <button type="button" class="btn btn-success"
+                                                        onclick="saveQuestionPanel(this)">Kaydet
+                                                </button>
                                             </div>
                                         </div>
-                                        <button type="button" class="btn btn-sm btn-outline-secondary"
-                                                onclick="addAnswer(this)">+ Cevap Ekle</button>
                                     </div>
-
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-secondary btn-sm" type="button" onclick="hideParentPanel(this)">İptal</button>
-                                        <button class="btn btn-success btn-sm" type="submit">Sınav Ekle</button>
+                                    <div class="d-flex gap-2 d-none exam-action-buttons">
+                                        <button class="btn btn-secondary btn-sm" type="button"
+                                                onclick="hideParentPanel(this)">İptal
+                                        </button>
+                                        <button class="btn btn-success btn-sm" type="button"
+                                                onclick="showQuestionPanel(this)">Sınav Ekle
+                                        </button>
+                                        <div th:id="|lesson-edit-panel-${iterStat.index}|"
+                                             class="d-none">
+                                            <input type="text"
+                                                   th:id="|lesson-input-${iterStat.index}|"
+                                                   th:value="${lesson.title}"
+                                                   class="form-control mb-2"
+                                                   placeholder="Ders başlığı"/>
+                                            <div class="d-flex gap-2">
+                                                <button type="button"
+                                                        class="btn btn-purple btn-sm"
+                                                        th:onclick="|saveLesson(${iterStat.index})|">Dersi Kaydet
+                                                </button>
+                                                <button type="button"
+                                                        class="btn btn-secondary btn-sm"
+                                                        th:onclick="|cancelEdit(${iterStat.index})|">İptal
+                                                </button>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -129,75 +376,756 @@
                     </div>
                 </div>
             </div>
-
             <div id="add-section-panel" class="d-none mb-4">
                 <div class="card">
                     <div class="card-body">
-                        <label class="form-label">Yeni Bölüm</label>
-                        <input type="text" th:field="*{title}" class="form-control mb-3" id="new-section-title" placeholder="Başlık Girin">
+                        <label for="new-section-title" class="form-label">Yeni Bölüm</label>
+                        <input type="text" th:field="*{title}" class="form-control mb-3" id="new-section-title"
+                               placeholder="Başlık
+                                            Girin"/>
                         <div class="d-flex justify-content-end gap-2">
-                            <button class="btn btn-secondary btn-sm" onclick="cancelSectionPanel()">İptal</button>
-                            <button class="btn btn-success btn-sm" onclick="addNewSection()">Bölüm Ekle</button>
+                            <button class="btn btn-secondary btn-sm" type="button" onclick="cancelSectionPanel()">
+                                İptal
+                            </button>
+                            <button class="btn btn-success btn-sm" type="button" onclick="addNewSection()">Bölüm
+                                Ekle
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
-            <button class="btn btn-primary" onclick="showSectionPanel()">+ Bölüm</button>
+            <button class="btn btn-primary" type="button" onclick="showSectionPanel()">+ Bölüm</button>
+        </div>
+        <div style="position: fixed; bottom: 20px; right: 20px; z-index: 1000;">
+            <button type="submit" class="btn btn-primary btn-lg">Kaydet</button>
         </div>
     </form>
-
 </div>
+
+<script src="https://cdn.jsdelivr.net/npm/highlight.js@11.8.0/lib/common.min.js"></script>
+<script src="https://cdn.quilljs.com/1.3.6/quill.min.js"></script>
 <script>
 
 
+    function updateIdsAndNames(sectionElement, sectionIndex) {
+        sectionElement.querySelectorAll('[id]').forEach(el => {
+            if (!el.id) return;
+            el.id = el.id.replace(/\d+$/, sectionIndex);
+        });
+        sectionElement.querySelectorAll('[name]').forEach(el => {
+            if (!el.name) return;
+            el.name = el.name.replace(/\d+$/, sectionIndex);
+        });
+        sectionElement.querySelectorAll('label[for]').forEach(el => {
+            if (!el.getAttribute('for')) return;
+            el.setAttribute('for', el.getAttribute('for').replace(/\d+$/, sectionIndex));
+        });
+        sectionElement.querySelectorAll('[onclick]').forEach(el => {
+            if (!el.getAttribute('onclick')) return;
+            el.setAttribute('onclick', el.getAttribute('onclick').replace(/\d+/, sectionIndex));
+        });
+    }
+
+
+    // function initQuillEditor(index) {
+    //     if (quillEditors[index]) return; // zaten varsa oluşturma
+    //
+    //     const editor = document.getElementById(`quill-editor-${index}`);
+    //     if (!editor) return;
+    //
+    //     // Eğer DOM'da zaten Quill oluşturulmuşsa tekrar oluşturma
+    //     if (editor.classList.contains('ql-container')) return;
+    //
+    //     const quill = new Quill(editor, {
+    //         theme: "snow",
+    //         modules: {
+    //             syntax: true,
+    //             toolbar: [
+    //                 [{ header: [1, 2, 3, false] }],
+    //                 ["bold", "italic", "underline"],
+    //                 ["code-block"],
+    //                 ["link", "blockquote", "clean"]
+    //             ]
+    //         }
+    //     });
+    //
+    //     quillEditors[index] = quill;
+    //     console.log(`Quill editörü başlatıldı: quill-editor-${index}`);
+    // }
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const editors = document.querySelectorAll(".quill-editor");
+    //
+    //     editors.forEach((editor) => {
+    //         const index = editor.id.split("-").pop();
+    //
+    //         if (!quillEditors[index]) {
+    //             quillEditors[index] = new Quill(editor, {
+    //                 theme: "snow",
+    //                 modules: {
+    //                     syntax: true,
+    //                     toolbar: [
+    //                         [{ header: [1, 2, 3, false] }],
+    //                         ["bold", "italic", "underline"],
+    //                         ["code-block"],
+    //                         ["link", "blockquote", "clean"]
+    //                     ]
+    //                 }
+    //             });
+    //             console.log(`Quill oluşturuldu: ${editor.id}`);
+    //         }
+    //     });
+    // });
+
+
+    // document.addEventListener("DOMContentLoaded", function () {
+    //     const editors = document.querySelectorAll(".quill-editor");
+    //
+    //     editors.forEach((editor) => {
+    //         const quill = new Quill(editor, {
+    //             theme: "snow",
+    //             modules: {
+    //                 syntax: true,
+    //                 toolbar: [
+    //                     [{ header: [1, 2, 3, false] }],
+    //                     ["bold", "italic", "underline"],
+    //                     ["code-block"],
+    //                     ["link", "blockquote", "clean"]
+    //                 ]
+    //             }
+    //         });
+    //
+    //         // editor id'sinden indexi al, örn: quill-editor-2 -> 2
+    //         const index = editor.id.split('-').pop();
+    //         quillEditors[index] = quill;
+    //
+    //         // Form gönderiminde gizli input'a içeriği aktar
+    //         const hiddenInput = editor.parentElement.querySelector("input[type='hidden']");
+    //         editor.closest("form").addEventListener("submit", function () {
+    //             if (hiddenInput) {
+    //                 hiddenInput.value = quill.root.innerHTML;
+    //             }
+    //         });
+    //     });
+    // });
+
+    function disableContentButton(index) {
+        const btn = document.getElementById(`toggle-btn-${index}`);
+        if (btn) {
+            btn.disabled = true;
+            btn.classList.add("disabled");
+        }
+    }
+
+    function saveArticleContent(sectionIndex, lessonIndex) {
+        const index = `${sectionIndex}-${lessonIndex}`;
+        const textarea = document.querySelector(`#content-panel-${index} textarea`);
+
+        if (!textarea) {
+            alert(`Metin alanı bulunamadı! ID: articleText__${index}`);
+            console.error(`Beklenen textarea bulunamadı: articleText__${index}`);
+            return;
+        }
+
+        const content = textarea.value.trim();
+        if (!content) {
+            alert("Lütfen boş olmayan bir metin girin.");
+            return;
+        }
+
+        const summaryArea = document.getElementById(`lesson-content-summary-${index}`);
+        if (summaryArea) {
+            const span = summaryArea.querySelector("span");
+            if (span) {
+                span.textContent = `Makale: ${content}`;
+            }
+            summaryArea.classList.remove("d-none");
+        }
+
+        const panel = document.getElementById(`content-panel-${index}`);
+        if (panel) panel.classList.add("d-none");
+
+        const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+        if (toggleBtn) toggleBtn.disabled = false;
+
+        const videoHidden = document.querySelector(`#content-panel-${index} input[type="hidden"][name$=".base64Video"]`);
+        if (videoHidden) videoHidden.value = "";
+    }
+
+
+    function clearArticleContent(sectionIndex, lessonIndex) {
+        const index = `${sectionIndex}-${lessonIndex}`;
+        if (confirm("Bu makaleyi silmek istediğinizden emin misiniz?")) {
+            const textarea = document.getElementById(`articleText__${index}`);
+            if (textarea) textarea.value = "";
+
+            const summaryArea = document.getElementById(`lesson-content-summary-${index}`);
+            if (summaryArea) {
+                const span = summaryArea.querySelector("span");
+                if (span) span.textContent = "";
+                summaryArea.classList.add("d-none");
+            }
+
+            const contentPanel = document.getElementById(`content-panel-${index}`);
+            if (contentPanel) {
+                const articlePanel = contentPanel.querySelector(".article-panel");
+                const videoPanel = contentPanel.querySelector(".video-upload");
+                const optionButtons = contentPanel.querySelector(".option-buttons");
+
+                if (articlePanel) articlePanel.classList.add("d-none");
+                if (videoPanel) videoPanel.classList.add("d-none");
+                if (optionButtons) optionButtons.classList.remove("d-none");
+            }
+
+            const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+            if (toggleBtn) {
+                toggleBtn.disabled = false;
+                toggleBtn.classList.remove("d-none");
+            }
+        }
+    }
+
+
+    function saveVideoContent(index) {
+        const hiddenInput = document.querySelector(`#videoBase64-${index}`);
+        if (!hiddenInput || !hiddenInput.value) {
+            alert("Video yüklenmedi veya kaydedilmedi.");
+            return;
+        }
+
+        const articleSummary = document.getElementById(`lesson-article-summary-${index}`);
+        if (articleSummary) articleSummary.classList.add("d-none");
+
+        const videoSummary = document.getElementById(`lesson-video-summary-${index}`);
+        if (videoSummary) {
+            const span = videoSummary.querySelector("span");
+            if (span) span.textContent = "🎥 Video: Yüklendi";
+            videoSummary.classList.remove("d-none");
+        }
+
+        const panel = document.getElementById(`content-panel-${index}`);
+        if (panel) panel.classList.add("d-none");
+
+        const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+        if (toggleBtn) {
+            toggleBtn.disabled = false;
+            toggleBtn.classList.add("disabled");
+        }
+
+        alert("🎥 Video başarıyla kaydedildi.");
+    }
+
+
+    function clearVideoContent(sectionIndex, lessonIndex) {
+        const index = `${sectionIndex}-${lessonIndex}`;
+
+        const hiddenInput = document.getElementById(`videoBase64-${index}`);
+        if (hiddenInput) hiddenInput.value = "";
+
+        const summaryArea = document.getElementById(`lesson-video-summary-${index}`);
+        if (summaryArea) {
+            const span = summaryArea.querySelector("span");
+            if (span) span.textContent = "";
+            summaryArea.classList.add("d-none");
+        }
+
+        const panel = document.getElementById(`content-panel-${index}`);
+        if (panel) {
+            panel.querySelector(".video-upload")?.classList.add("d-none");
+            panel.querySelector(".option-buttons")?.classList.remove("d-none");
+        }
+
+        const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+        if (toggleBtn) {
+            toggleBtn.disabled = false;
+            toggleBtn.classList.remove("d-none");
+        }
+    }
+
+
+    function toggleContentOptionsFromDisplay(sectionIndex, lessonIndex) {
+        const index = `${sectionIndex}-${lessonIndex}`;
+        const panel = document.getElementById(`content-panel-${index}`);
+        if (!panel) return;
+
+        const articlePanel = panel.querySelector(".article-panel");
+        const videoPanel = panel.querySelector(".video-upload");
+        const optionButtons = panel.querySelector(".option-buttons");
+
+        const articleSummary = document.getElementById(`lesson-article-summary-${index}`);
+        const videoSummary = document.getElementById(`lesson-video-summary-${index}`);
+
+        if (videoSummary && !videoSummary.classList.contains("d-none")) {
+            if (videoPanel) videoPanel.classList.remove("d-none");
+            if (articlePanel) articlePanel.classList.add("d-none");
+        } else {
+            if (articlePanel) articlePanel.classList.remove("d-none");
+            if (videoPanel) videoPanel.classList.add("d-none");
+        }
+
+        if (optionButtons) optionButtons.classList.add("d-none");
+
+        panel.classList.remove("d-none");
+
+        const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+        if (toggleBtn) {
+            toggleBtn.disabled = false;
+            toggleBtn.classList.add("d-none");
+        }
+    }
+
+
+    function addNewLesson(btn) {
+        const sectionContainer = btn.closest(".section-container");
+        const sectionIndex = sectionContainer.getAttribute("data-section-index");
+
+        const lessonsContainer = sectionContainer.querySelector(".card-body");
+        const lessonListContainer = sectionContainer.querySelector("[id^='lesson-list-']");
+
+        const lessonTitleInput = sectionContainer.querySelector(`#newLessonTitleInput-${sectionIndex}`);
+        if (!lessonTitleInput || !lessonTitleInput.value.trim()) {
+            alert("Lütfen yeni ders başlığı girin.");
+            return;
+        }
+
+        const allLessons = sectionContainer.querySelectorAll("span[id^='lesson-title-']");
+        const newIndex = allLessons.length;
+
+        const firstLesson = lessonsContainer.querySelector(".border.rounded.p-3.d-flex.justify-content-between");
+        const firstContentPanel = firstLesson ? firstLesson.nextElementSibling : null;
+        const baseEditPanel = sectionContainer.querySelector(`#lesson-edit-panel-${sectionIndex}-0`);
+
+        if (!firstLesson || !firstContentPanel || !baseEditPanel) {
+            alert("İlk ders şablonu bulunamadı.");
+            return;
+        }
+
+        const newLesson = firstLesson.cloneNode(true);
+        const oldEditPanel = newLesson.querySelector("[id^='lesson-edit-panel-']");
+        if (oldEditPanel) oldEditPanel.remove();
+
+        const articleSummaryDiv = document.createElement("div");
+        articleSummaryDiv.className = "d-none d-flex align-items-center bg-light rounded px-3 py-1 ms-auto";
+        articleSummaryDiv.id = `lesson-content-summary-${sectionIndex}-${newIndex}`;
+        articleSummaryDiv.style.cssText = "max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
+        articleSummaryDiv.setAttribute("data-content-type", "article");
+        articleSummaryDiv.innerHTML = `
+        <span class="flex-grow-1 text-truncate me-2" style="max-width: 170px;"></span>
+        <button type="button" class="btn btn-link btn-sm p-0" onclick="toggleContentOptionsFromDisplay(${sectionIndex}, ${newIndex})" aria-label="Makaleyi Düzenle">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button type="button" class="btn btn-link btn-sm p-0" onclick="clearArticleContent(${sectionIndex}, ${newIndex})" aria-label="Makale Sil">
+            <i class="bi bi-trash3"></i>
+        </button>
+    `;
+
+        const videoSummaryDiv = document.createElement("div");
+        videoSummaryDiv.className = "d-none d-flex align-items-center bg-light rounded px-3 py-1 ms-auto";
+        videoSummaryDiv.id = `lesson-video-summary-${sectionIndex}-${newIndex}`;
+        videoSummaryDiv.style.cssText = "max-width: 300px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;";
+        videoSummaryDiv.setAttribute("data-content-type", "video");
+        videoSummaryDiv.innerHTML = `
+        <span class="flex-grow-1 text-truncate me-2" style="max-width: 170px;"></span>
+        <button type="button" class="btn btn-link btn-sm p-0" onclick="toggleContentOptionsFromDisplay(${sectionIndex}, ${newIndex})" aria-label="Video Düzenle">
+            <i class="bi bi-pencil-square"></i>
+        </button>
+        <button type="button" class="btn btn-link btn-sm p-0" onclick="clearVideoContent(${sectionIndex}, ${newIndex})" aria-label="Video Sil">
+            <i class="bi bi-trash3"></i>
+        </button>
+    `;
+
+        newLesson.appendChild(articleSummaryDiv);
+        newLesson.appendChild(videoSummaryDiv);
+
+        const newContentPanel = firstContentPanel.cloneNode(true);
+        newContentPanel.id = `content-panel-${sectionIndex}-${newIndex}`;
+        newContentPanel.classList.add("d-none");
+
+        const hiddenInput = newContentPanel.querySelector('input[type="hidden"][id^="videoBase64-"]');
+        if (hiddenInput) {
+            hiddenInput.id = `videoBase64-${sectionIndex}-${newIndex}`;
+            hiddenInput.name = `lessonList[${newIndex}].videoContentRequest.base64Video`;
+            hiddenInput.value = "";
+        }
+
+        const saveVideoBtn = newContentPanel.querySelector('button[onclick*="saveVideoContent"]');
+        if (saveVideoBtn) {
+            saveVideoBtn.setAttribute("onclick", `saveVideoContent('${sectionIndex}-${newIndex}')`);
+        }
+
+        const articlePanel = newContentPanel.querySelector(".article-panel");
+        if (articlePanel) {
+            articlePanel.innerHTML = "";
+
+            const textarea = document.createElement("textarea");
+            textarea.id = `articleText__${sectionIndex}-${newIndex}`;
+            textarea.name = `lessonList[${newIndex}].articleContentRequest.text`;
+            textarea.className = "form-control mb-2";
+            textarea.placeholder = "Açıklama yazın...";
+
+            articlePanel.appendChild(textarea);
+
+            const saveArticleBtn = document.createElement("button");
+            saveArticleBtn.type = "button";
+            saveArticleBtn.className = "btn btn-purple-filled btn-sm float-end";
+            saveArticleBtn.textContent = "Kaydet";
+            saveArticleBtn.setAttribute("onclick", `saveArticleContent(${sectionIndex}, ${newIndex})`);
+
+            articlePanel.appendChild(saveArticleBtn);
+        }
+
+        const newEditPanel = baseEditPanel.cloneNode(true);
+        newEditPanel.id = `lesson-edit-panel-${sectionIndex}-${newIndex}`;
+        newEditPanel.classList.add("d-none");
+        const input = newEditPanel.querySelector("input[type='text']");
+        if (input) {
+            input.id = `lesson-input-${sectionIndex}-${newIndex}`;
+            input.value = "";
+        }
+        const saveBtn = newEditPanel.querySelector("button.btn-purple");
+        if (saveBtn) saveBtn.setAttribute("onclick", `saveLesson(${sectionIndex}, ${newIndex})`);
+        const cancelBtn = newEditPanel.querySelector("button.btn-secondary");
+        if (cancelBtn) cancelBtn.setAttribute("onclick", `cancelEdit(${sectionIndex}, ${newIndex})`);
+
+        const lessonLabel = newLesson.querySelector("span[id^='lesson-title-']").previousElementSibling;
+        if (lessonLabel) lessonLabel.textContent = `Ders ${newIndex + 1}:`;
+
+        const lessonTitleSpan = newLesson.querySelector("span[id^='lesson-title-']");
+        if (lessonTitleSpan) {
+            lessonTitleSpan.textContent = lessonTitleInput.value.trim();
+            lessonTitleSpan.id = `lesson-title-${sectionIndex}-${newIndex}`;
+        }
+
+        const editBtn = newLesson.querySelector("button[aria-label='Düzenle']");
+        if (editBtn) editBtn.setAttribute("onclick", `toggleEditPanel(${sectionIndex}, ${newIndex})`);
+
+        const removeBtn = newLesson.querySelector("button[aria-label='Sil']");
+        if (removeBtn) removeBtn.setAttribute("onclick", `removeLesson(${sectionIndex}, ${newIndex})`);
+
+        const toggleBtn = newLesson.querySelector("button.btn-sm.btn-outline-purple");
+        if (toggleBtn) {
+            toggleBtn.id = `toggle-btn-${sectionIndex}-${newIndex}`;
+            toggleBtn.setAttribute("data-index", `${sectionIndex}-${newIndex}`);
+            toggleBtn.setAttribute("onclick", "toggleContentOptions(this)");
+            toggleBtn.classList.remove("d-none");
+            toggleBtn.disabled = false;
+            toggleBtn.classList.remove("disabled");
+        }
+
+        lessonListContainer.appendChild(newLesson);
+        lessonListContainer.appendChild(newContentPanel);
+        lessonListContainer.appendChild(newEditPanel);
+
+        lessonTitleInput.value = "";
+    }
+
+
+    function createExamContainer(btn, sectionIndex, lessonIndex) {
+        const examPanel = btn.closest(".panel-exam");
+
+        const titleInput = examPanel.querySelector("input[type='text']");
+        const descInput = examPanel.querySelector("textarea");
+
+        const title = titleInput?.value.trim();
+        const desc = descInput?.value.trim();
+
+        if (!title) {
+            alert("Lütfen sınav başlığı girin.");
+            return;
+        }
+
+        const examListId = `exam-list-${sectionIndex}-${lessonIndex}`;
+        const examList = document.getElementById(examListId);
+        if (!examList) {
+            alert("Sınav listesi bulunamadı.");
+            return;
+        }
+
+        const currentExamCount = examList.querySelectorAll(".border.p-3.rounded.mb-3.bg-white").length;
+        const examNumber = currentExamCount + 1;
+
+        const template = examPanel.querySelector(".question-answer-panel");
+        if (!template) {
+            alert("Soru-cevap panel şablonu bulunamadı!");
+            return;
+        }
+
+        const questionAnswerPanelClone = template.cloneNode(true);
+        questionAnswerPanelClone.classList.add("d-none");
+
+        const examContainer = document.createElement("div");
+        examContainer.className = "border p-3 rounded mb-3 bg-white";
+
+        examContainer.innerHTML = `
+        <div class="d-flex justify-content-between align-items-center mb-2">
+            <div class="d-flex align-items-center gap-3">
+                <div>
+                    <h6 class="mb-0">Sınav ${examNumber}: ${title}</h6>
+                    <small class="text-muted">${desc}</small>
+                </div>
+                <div class="d-flex gap-2">
+                    <button type="button" class="btn btn-link p-0" onclick="editExam(this)" aria-label="Düzenle">
+                        <i class="bi bi-pencil theme-icon"></i>
+                    </button>
+                    <button class="btn btn-link p-0" onclick="removeExam(this)" aria-label="Sil">
+                        <i class="bi bi-trash3 theme-icon"></i>
+                    </button>
+                </div>
+            </div>
+            <div>
+                <button type="button" class="btn btn-outline-primary btn-sm" onclick="toggleExamQuestionPanel(this)">
+                    Soru Ekle
+                </button>
+            </div>
+        </div>
+    `;
+
+        examContainer.appendChild(questionAnswerPanelClone);
+        examList.appendChild(examContainer);
+
+        titleInput.value = "";
+        descInput.value = "";
+
+        examPanel.classList.add("d-none");
+    }
+
+
+    function toggleExamQuestionPanel(btn) {
+        const container = btn.closest(".border");
+        if (!container) return;
+
+        const questionPanel = container.querySelector(".question-answer-panel");
+        if (!questionPanel) return;
+
+        questionPanel.classList.toggle("d-none");
+    }
+
+    function saveQuestionPanel(btn) {
+        const panel = btn.closest(".question-answer-panel");
+        if (!panel) return;
+
+        alert("Soru ve cevaplar kaydedildi!");
+
+        panel.classList.add("d-none");
+    }
+
+    function closeQuestionPanel(btn) {
+        const panel = btn.closest(".question-answer-panel");
+        if (!panel) return;
+
+        panel.classList.add("d-none");
+    }
+
+    function addAnswer(btn) {
+        const container = btn.closest(".question-block").querySelector(".answers-container");
+        const index = Date.now();
+
+        const answerHtml = `
+        <div class="input-group mb-2">
+            <div class="input-group-text">
+                <input type="radio" name="questionCorrectOption_${index}" onchange="setCorrectOption(this)">
+            </div>
+            <input type="text" class="form-control" placeholder="Cevap girin">
+            <input type="hidden" value="false">
+        </div>
+    `;
+
+        container.insertAdjacentHTML("beforeend", answerHtml);
+    }
+
+    function editExam(btn) {
+        const container = btn.closest(".border");
+        const panel = container.querySelector(".edit-exam-panel");
+        if (panel) {
+            panel.classList.remove("d-none");
+        }
+    }
+
+    function saveEditExam(btn) {
+        const panel = btn.closest(".edit-exam-panel");
+        const container = panel.closest(".border");
+        const newTitle = panel.querySelector(".exam-edit-title").value.trim();
+        const newDesc = panel.querySelector(".exam-edit-desc").value.trim();
+
+        const titleEl = container.querySelector("h6");
+        const descEl = container.querySelector("small");
+
+        if (titleEl && newTitle) titleEl.textContent = newTitle;
+        if (descEl) descEl.textContent = newDesc;
+
+        panel.classList.add("d-none");
+    }
+
+    function cancelEdit(sectionIndex, lessonIndex) {
+        const panel = document.getElementById(`lesson-edit-panel-${sectionIndex}-${lessonIndex}`);
+        if (panel) panel.classList.add("d-none");
+    }
+
+    function removeExam(btn) {
+        if (confirm("Bu sınavı silmek istediğinizden emin misiniz?")) {
+            const examContainer = btn.closest('.border');
+            examContainer.remove();
+        }
+    }
+
     function setCorrectOption(radio) {
-        const group = radio.closest('.panel-exam');
+        const group = radio.closest(".answers-container");
+        const allHidden = group.querySelectorAll('input[type="hidden"]');
+        allHidden.forEach(h => h.value = "false");
+
+        const hidden = radio.closest(".input-group").querySelector('input[type="hidden"]');
+        if (hidden) hidden.value = "true";
+    }
+
+    function addExam(btn) {
+        const curriculumPanel = btn.closest(".curriculum-panel");
+        const examTemplate = curriculumPanel.querySelector(".panel-exam").cloneNode(true);
+
+        examTemplate.querySelectorAll("input, textarea").forEach(input => {
+            if (input.type !== "hidden") {
+                input.value = "";
+            }
+        });
+
+        const questionPanel = examTemplate.querySelector(".question-answer-panel");
+        if (questionPanel) questionPanel.classList.add("d-none");
+
+        const insertBeforeEl = curriculumPanel;
+        insertBeforeEl.parentNode.insertBefore(examTemplate, insertBeforeEl);
+    }
+
+    function showQuestionPanel(btn) {
+        const examPanel = btn.closest(".panel-exam");
+        const questionPanel = examPanel.querySelector(".question-answer-panel");
+
+        if (questionPanel) {
+            questionPanel.classList.remove("d-none");
+        }
+
+        const inputs = examPanel.querySelectorAll("input, textarea");
+        inputs.forEach(el => {
+            if (!el.closest(".question-answer-panel")) {
+                el.disabled = true;
+            }
+        });
+
+    }
+
+    function closeContentPanel(btn) {
+        const panel = btn.closest('.content-panel');
+        panel.classList.add('d-none');
+
+        const videoPanel = panel.querySelector(".video-upload");
+        const articlePanel = panel.querySelector(".article-panel");
+        const optionButtons = panel.querySelector(".option-buttons");
+
+        if (videoPanel) videoPanel.classList.add("d-none");
+        if (articlePanel) articlePanel.classList.add("d-none");
+        if (optionButtons) optionButtons.classList.remove("d-none");
+
+        const panelId = panel.id;
+        const index = panelId.split('-').pop();
+        const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+        if (toggleBtn) toggleBtn.classList.remove('d-none');
+    }
+
+    function toggleEditPanel(sectionIndex, lessonIndex) {
+        const panel = document.getElementById(`lesson-edit-panel-${sectionIndex}-${lessonIndex}`);
+        if (panel) panel.classList.toggle("d-none");
+    }
+
+
+    function cancelEdit(index) {
+        document.getElementById(`lesson-edit-panel-${index}`).style.display = 'none';
+    }
+
+    function saveLesson(sectionIndex, lessonIndex) {
+        const input = document.getElementById(`lesson-input-${sectionIndex}-${lessonIndex}`);
+        const titleSpan = document.getElementById(`lesson-title-${sectionIndex}-${lessonIndex}`);
+
+        if (input && titleSpan) {
+            titleSpan.textContent = input.value;
+        }
+
+        const panel = document.getElementById(`lesson-edit-panel-${sectionIndex}-${lessonIndex}`);
+        if (panel) panel.classList.add("d-none");
+    }
+
+    function removeLesson(index) {
+        alert(`Ders ${index + 1} silinecek`);
+    }
+
+    function setCorrectOption(radio) {
+        const group = radio.closest(".panel-exam");
         const allOptions = group.querySelectorAll('input[type="hidden"][name$=".isCorrect"]');
-        allOptions.forEach(opt => opt.value = 'false');
+        allOptions.forEach((opt) => (opt.value = "false"));
 
         const hiddenInput = radio.parentElement.parentElement.querySelector('input[type="hidden"]');
         if (hiddenInput) {
-            hiddenInput.value = 'true';
+            hiddenInput.value = "true";
         }
     }
+
     function encodeVideo(fileInput) {
         const file = fileInput.files[0];
+        if (!file) return;
+
         const reader = new FileReader();
-
         reader.onload = function (e) {
-            const base64 = e.target.result.split(',')[1];
-            const hiddenInput = fileInput
-                .closest('.video-upload')
-                .querySelector('input[type="hidden"]');
+            const base64 = e.target.result.split(",")[1];
 
+            const hiddenInput = fileInput.closest(".video-upload").querySelector("input[type='hidden']");
             if (hiddenInput) {
                 hiddenInput.value = base64;
+            } else {
+                console.warn("Base64 input bulunamadı!");
             }
         };
 
-        if (file) {
-            reader.readAsDataURL(file);
+        reader.readAsDataURL(file);
+    }
+
+
+    function toggleContentOptions(btn) {
+        if (btn.disabled) return;
+
+        const index = btn.getAttribute("data-index");
+        const panel = document.getElementById(`content-panel-${index}`);
+        const toggleBtn = document.getElementById(`toggle-btn-${index}`);
+
+        if (panel && toggleBtn) {
+            panel.classList.remove("d-none");
+            toggleBtn.classList.add("d-none");
+
+            const articleBtn = panel.querySelector("button[onclick*='article']");
+            const videoBtn = panel.querySelector("button[onclick*='video']");
+
+            if (articleBtn) articleBtn.style.display = "block";
+            if (videoBtn) videoBtn.style.display = "block";
         }
     }
 
-    function toggleContentOptions(btn) {
-        const panel = btn.nextElementSibling;
-        panel.classList.toggle("d-none");
-    }
 
     function toggleSpecificPanel(btn, type) {
         const panel = btn.closest(".content-panel");
         const videoPanel = panel.querySelector(".video-upload");
         const articlePanel = panel.querySelector(".article-panel");
+        const optionButtons = panel.querySelector(".option-buttons");
+
+        if (optionButtons) optionButtons.classList.add("d-none");
+
+        const index = panel.id.split("-").pop();
 
         if (type === "video") {
-            videoPanel.classList.toggle("d-none");
+            videoPanel.classList.remove("d-none");
             articlePanel.classList.add("d-none");
         } else if (type === "article") {
-            articlePanel.classList.toggle("d-none");
+            articlePanel.classList.remove("d-none");
             videoPanel.classList.add("d-none");
+
         }
     }
+
 
     function toggleCurriculumItemPanel(btn) {
         const panel = btn.nextElementSibling;
@@ -205,16 +1133,25 @@
     }
 
     function showOnlyPanel(btn, type) {
-        const container = btn.closest(".curriculum-panel");
-        const panels = container.querySelectorAll('[class^="panel-"]');
-        panels.forEach(panel => {
-            if (panel.classList.contains(`panel-${type}`)) {
-                panel.classList.remove("d-none");
+        const parent = btn.closest(".curriculum-panel");
+        const lessonPanel = parent.querySelector(".panel-lesson");
+        const examPanels = parent.querySelectorAll(".panel-exam");
+
+        if (type === "lesson") {
+            lessonPanel?.classList.remove("d-none");
+            examPanels.forEach(p => p.classList.add("d-none"));
+        } else if (type === "exam") {
+            lessonPanel?.classList.add("d-none");
+
+            const hiddenExam = Array.from(examPanels).find(p => p.classList.contains("d-none"));
+            if (hiddenExam) {
+                hiddenExam.classList.remove("d-none");
             } else {
-                panel.classList.add("d-none");
+                alert("Bu bölümde açılacak başka sınav paneli bulunamadı.");
             }
-        });
+        }
     }
+
 
     function hideParentPanel(btn) {
         const parentPanel = btn.closest('[class^="panel-"]');
@@ -230,22 +1167,118 @@
         document.getElementById("new-section-title").value = "";
     }
 
-    function addNewSection() {
-        const title = document.getElementById("new-section-title").value;
-        if (!title) return;
+    let sectionIdCounter = document.querySelectorAll('.section-container').length;
 
-        const sectionTemplate = document.querySelector(".section-container");
-        const newSection = sectionTemplate.cloneNode(true);
+    async function addNewLessonToBackend(sectionId, title) {
+        try {
+            const response = await fetch('/lessons/api', {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    title: title,
+                    sectionId: sectionId
+                })
+            });
 
-        newSection.querySelector(".card-title").textContent = title;
-        newSection.querySelectorAll("input").forEach(input => input.value = "");
-        newSection.querySelectorAll(".d-none").forEach(el => el.classList.add("d-none"));
+            if (!response.ok) throw new Error("Ders oluşturulamadı");
 
-        document.getElementById("sections-container").insertBefore(newSection, document.getElementById("add-section-panel"));
-        cancelSectionPanel();
+            const lesson = await response.json();
+            return lesson;
+        } catch (err) {
+            console.error(err);
+            alert("Ders eklenirken hata oluştu");
+            return null;
+        }
     }
+
+
+    async function addNewSection() {
+        const titleInput = document.getElementById("new-section-title");
+        const title = titleInput.value.trim();
+        if (!title) {
+            alert("Lütfen bölüm başlığı girin.");
+            return;
+        }
+
+        const params = new URLSearchParams(window.location.search);
+
+        const courseId = params.get('courseId');
+
+        const sectionRequest = {
+            title: title,
+            courseId: courseId,
+            lessonList: [],
+        };
+
+        try {
+            const response = await fetch('/sections/api', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(sectionRequest)
+            });
+
+            if (!response.ok) throw new Error('Bölüm eklenirken hata oluştu.');
+
+            const newSection = await response.json();
+
+            createSectionDOM(newSection, sectionIdCounter);
+            sectionIdCounter++;
+            titleInput.value = "";
+
+            cancelSectionPanel();
+
+        } catch (error) {
+            alert(error.message);
+        }
+    }
+
+    function createSectionDOM(section, index) {
+        const container = document.getElementById("sections-container");
+        const template = document.querySelector(".section-container");
+
+        const newSection = template.cloneNode(true);
+        const newIndex = index;
+
+        const titleEl = newSection.querySelector(".card-title");
+        if (titleEl) {
+            titleEl.textContent = `Bölüm ${newIndex + 1}: ${section.title}`;
+        }
+
+        updateIdsAndNames(newSection, newIndex);
+
+        const lessonListContainer = newSection.querySelector(`#lesson-list-${section.id}`);
+        lessonListContainer.innerHTML = "";
+
+        section.lessonList.forEach((lesson, lessonIndex) => {
+            const lessonEl = document.createElement("div");
+
+            lessonEl.className = "border rounded p-3 d-flex justify-content-between align-items-start gap-3 mb-3";
+            lessonEl.innerHTML = `
+            <div class="d-flex align-items-center gap-2">
+                <span>Ders ${lessonIndex + 1}:</span>
+                <span id="lesson-title-${lessonIndex}">${lesson.title}</span>
+                <button type="button" class="btn btn-link p-0" onclick="toggleEditPanel(${lessonIndex})" aria-label="Düzenle">
+                    <i class="bi bi-pencil theme-icon"></i>
+                </button>
+                <button type="button" class="btn btn-link p-0" onclick="removeLessonFromBackend(${lesson.id}, ${lessonIndex})" aria-label="Sil">
+                    <i class="bi bi-trash3 theme-icon"></i>
+                </button>
+            </div>
+            <div>
+                <button class="btn btn-sm btn-outline-purple" type="button" onclick="toggleContentOptions(this)" id="toggle-btn-${lessonIndex}" data-index="${lessonIndex}">+ İçerik</button>
+            </div>
+        `;
+
+            lessonListContainer.appendChild(lessonEl);
+        });
+
+        container.insertBefore(newSection, document.getElementById("add-section-panel"));
+    }
+
+
 </script>
 </body>
+
 </html>
-
-

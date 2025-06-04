@@ -57,9 +57,11 @@ public class LessonServiceImpl implements ILessonService {
                 .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.LESSON_NOT_FOUND));
         lesson.setTitle(lessonRequest.getTitle());
         if (lessonRequest.getArticleContentRequest() != null) {
-            lesson.setContent(contentMapper.toEntity(lessonRequest.getArticleContentRequest()));
-        } else if (lessonRequest.getVideoContentRequest() != null) {
-            lesson.setContent(contentMapper.toEntity(lessonRequest.getVideoContentRequest()));
+            lesson.setArticleContent(contentMapper.toEntity(lessonRequest.getArticleContentRequest()));
+        }
+
+        if (lessonRequest.getVideoContentRequest() != null) {
+            lesson.setVideoContent(contentMapper.toEntity(lessonRequest.getVideoContentRequest()));
         }
 
         if (lessonRequest.getExams() != null) {

@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,6 +15,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class CourseRequest {
+
+    private Long id;
+
     @NotBlank(message = "Course title is required")
     private String title;
 
@@ -32,5 +36,5 @@ public class CourseRequest {
     private String base64Image;
 
     @Valid
-    private List<SectionRequest> sections;
+    private List<SectionRequest> sections=new ArrayList<>();
 }

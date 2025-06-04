@@ -10,7 +10,8 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class ArticleContentRequest extends ContentRequest {
+public class ArticleContentRequest {
+
     @NotBlank(message = "Description is required")
     private  String description;
     private Long lessonId;

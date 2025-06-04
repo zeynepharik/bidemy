@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -14,5 +15,6 @@ import java.util.List;
 public class QuestionDTO {
     private Long id;
     private String text;
-    private List<OptionDTO> options;
+    private Boolean placeholder = false;
+    private List<OptionDTO> options = new ArrayList<>();
 }

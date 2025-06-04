@@ -8,7 +8,16 @@ import lombok.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@DiscriminatorValue("VIDEO")
-public class VideoContent extends Content {
-    private String videoUrl;
+public class VideoContent {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String description;
+
+    @OneToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
+
+    private String base64Video;
 }

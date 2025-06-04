@@ -46,6 +46,7 @@
 
 .wrapper {
     display: flex;
+    width: 100%;
 }
 .sidebar .btn-purple {
     background-color: #6f42c1;

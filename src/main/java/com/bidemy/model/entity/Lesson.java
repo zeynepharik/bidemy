@@ -37,5 +37,12 @@ public class Lesson {
             cascade = {CascadeType.ALL},
             orphanRemoval = true
     )
-    private Content content;
+    private ArticleContent articleContent;
+
+    @OneToOne(
+            mappedBy = "lesson",
+            cascade = {CascadeType.ALL},
+            orphanRemoval = true
+    )
+    private VideoContent videoContent;
 }

@@ -13,4 +13,6 @@ public class OptionDTO {
     private Long id;
     private String text;
     private Boolean isCorrect;
+    private Boolean placeholder = false;
+
 }

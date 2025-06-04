@@ -3,10 +3,14 @@ package com.bidemy.service.impl;
 import com.bidemy.exception.BusinessValidationException;
 import com.bidemy.exception.BusinessValidationRule;
 import com.bidemy.mapper.CourseMapper;
+import com.bidemy.mapper.SectionMapper;
 import com.bidemy.model.entity.Category;
 import com.bidemy.model.entity.Course;
 import com.bidemy.model.entity.CourseStatus;
+import com.bidemy.model.entity.Section;
 import com.bidemy.model.request.CourseRequest;
+import com.bidemy.model.request.LessonRequest;
+import com.bidemy.model.request.SectionRequest;
 import com.bidemy.model.response.CourseResponse;
 import com.bidemy.repository.CategoryRepository;
 import com.bidemy.repository.CourseRepository;
@@ -37,49 +41,98 @@ public class CourseServiceImpl implements ICourseService {
     private final CourseRepository courseRepository;
     private final CategoryRepository categoryRepository;
     private final UserRepository userRepository;
+    private final SectionMapper sectionMapper;
 
     public CourseResponse create(CourseRequest request) {
         System.out.println("Kurs oluşturuluyor: " + request);
         String pictureUrl = null;
-        if (request.getBase64Image() != null && !request.getBase64Image().isEmpty()) {
-            try {
-                pictureUrl = saveImageFile(request.getBase64Image());
-            } catch (IOException e) {
-                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPLOAD_FAILED);
-            }
-        }
+//        if (request.getBase64Image() != null && !request.getBase64Image().isEmpty()) {
+//            try {
+//                pictureUrl = saveImageFile(request.getBase64Image());
+//            } catch (IOException e) {
+//                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPLOAD_FAILED);
+//            }
+//        }
 
         Course course = new Course();
+        Section section = new Section();
+        section.setTitle("Giriş");
+
         course.setTitle(request.getTitle());
         course.setDescription(request.getDescription());
         course.setPrice(request.getPrice());
-        course.setPictureUrl(pictureUrl);
+        course.setBase64Image(request.getBase64Image());
         Category category = categoryRepository.findById(request.getCategoryId())
                 .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
         course.setCategory(category);
-        course = courseRepository.save(course);
+        section.setCourse(course);
         course.setStatus(CourseStatus.DRAFT);
+        course.setSections(List.of(section));
+        course = courseRepository.save(course);
+
+
         return courseMapper.toResponse(course);
     }
 
     public CourseResponse update(Long id, CourseRequest request) {
+        if (id == null) {
+            throw new IllegalArgumentException("Course id must not be null");
+        }
         Course course = courseRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.COURSE_NOT_FOUND));
-        if (request.getBase64Image() != null && !request.getBase64Image().isEmpty()) {
-            try {
-                String newImageUrl = saveImageFile(request.getBase64Image(), course.getPictureUrl());
-                course.setPictureUrl(newImageUrl);
-            } catch (IOException e) {
-                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPDATE_FAILED);
+//        if (request.getBase64Image() != null && !request.getBase64Image().isEmpty()) {
+//            try {
+//                String newImageUrl = saveImageFile(request.getBase64Image(), course.getPictureUrl());
+//                course.setPictureUrl(newImageUrl);
+//            } catch (IOException e) {
+//                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPDATE_FAILED);
+//            }
+//        }
+        if (request.getSections() != null) {
+            for (SectionRequest section : request.getSections()) {
+                if (section.getLessonList() != null) {
+                    for (LessonRequest lesson : section.getLessonList()) {
+                        if (lesson.getExams() != null) {
+                            lesson.setExams(
+                                    lesson.getExams().stream()
+                                            .filter(exam -> !Boolean.TRUE.equals(exam.getPlaceholder()) &&
+                                                    org.springframework.util.StringUtils.hasText(exam.getTitle()))
+                                            .peek(exam -> {
+                                                if (exam.getQuestionsList() != null) {
+                                                    exam.setQuestionsList(
+                                                            exam.getQuestionsList().stream()
+                                                                    .filter(q -> !Boolean.TRUE.equals(q.getPlaceholder()) &&
+                                                                            org.springframework.util.StringUtils.hasText(q.getText()))
+                                                                    .peek(q -> {
+                                                                        if (q.getOptions() != null) {
+                                                                            q.setOptions(
+                                                                                    q.getOptions().stream()
+                                                                                            .filter(opt -> !Boolean.TRUE.equals(opt.getPlaceholder()) &&
+                                                                                                    org.springframework.util.StringUtils.hasText(opt.getText()))
+                                                                                            .toList()
+                                                                            );
+                                                                        }
+                                                                    })
+                                                                    .toList()
+                                                    );
+                                                }
+                                            })
+                                            .toList()
+                            );
+                        }
+                    }
+                }
             }
         }
-
         course.setTitle(request.getTitle());
+        course.setBase64Image(request.getBase64Image());
         course.setDescription(request.getDescription());
         course.setPrice(request.getPrice());
-        Category category = categoryRepository.findById(request.getCategoryId())
+        Category category = categoryRepository.findById(course.getCategory().getId())
                 .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.CATEGORY_NOT_FOUND));
         course.setCategory(category);
+        course.setSections(request.getSections().stream().map(s->sectionMapper.toEntity(s)).toList());
         course = courseRepository.save(course);
+
 
         return courseMapper.toResponse(course);
     }

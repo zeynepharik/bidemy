@@ -1,9 +1,6 @@
 package com.bidemy.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Lob;
+import jakarta.persistence.*;
 import lombok.*;
 
 @Entity
@@ -11,8 +8,16 @@ import lombok.*;
 @AllArgsConstructor
 @Getter
 @Setter
-@DiscriminatorValue("ARTICLE")
-public class ArticleContent extends Content{
+public class ArticleContent {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    private String description;
+
+    @OneToOne
+    @JoinColumn(name = "lesson_id")
+    private Lesson lesson;
     @Column(name = "text", columnDefinition = "TEXT")
     private String text;
 }
