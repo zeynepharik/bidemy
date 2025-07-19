@@ -313,7 +313,8 @@
                                              class="question-block border rounded p-3 mb-3 bg-light">
                                             <label for="questionText_0_1_2" class="form-label">Soru</label>
                                             <input type="text" id="questionText_0_1_2" class="form-control mb-2"
-                                                   th:field="*{sections[${sectionStat}].lessonList[${iterStat.index}].exams[${eStat.index}].questionsList[${qStat.index}].text}"
+                                                   th:name="|section.lessonList[${iterStat.index}].exams[${eStat.index}].questionsList[${qStat.index}].text|"
+                                                   th:value="${question.text}"
                                                    placeholder="Soru metnini girin"/>
                                             <div class="answers-container mb-2"
                                                  th:each="option, oStat : ${question.options}">
@@ -1039,16 +1040,46 @@
         document.getElementById(`lesson-edit-panel-${index}`).style.display = 'none';
     }
 
-    function saveLesson(sectionIndex, lessonIndex) {
-        const input = document.getElementById(`lesson-input-${sectionIndex}-${lessonIndex}`);
-        const titleSpan = document.getElementById(`lesson-title-${sectionIndex}-${lessonIndex}`);
+    function saveLesson(sectionIndex) {
+        const input = document.getElementById(`lesson-input-${sectionIndex}`);
+        const title = input.value;
 
-        if (input && titleSpan) {
-            titleSpan.textContent = input.value;
-        }
+        // Ders verilerini içeren objeyi oluştur
+        const data = {
+            sectionIndex: sectionIndex,
+            title: title
+        };
 
-        const panel = document.getElementById(`lesson-edit-panel-${sectionIndex}-${lessonIndex}`);
-        if (panel) panel.classList.add("d-none");
+        // Yeni ders verilerini 'courseRequest' modeline eklemek için
+        const courseRequest = {
+            id: courseId,  // courseId'yi dışarıdan almalı veya context'ten edinmelisiniz
+            sections: [{
+                lessons: [{
+                    title: title,  // Ders başlığını bu alana yerleştiriyoruz
+                    sectionIndex: sectionIndex
+                }]
+            }]
+        };
+
+        // Fetch kullanarak AJAX isteği gönder
+        fetch('/courses/manage/curriculum/save', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(courseRequest)
+        })
+            .then(response => response.json())  // Sunucudan gelen yanıtı al
+            .then(responseData => {
+                // Başarıyla kaydedildiğinde yapılacak işlemler
+                console.log("Ders başarıyla kaydedildi:", responseData);
+                // Formu gizle veya gerekli işlemleri yap
+                const panel = document.getElementById(`lesson-edit-panel-${sectionIndex}`);
+                if (panel) panel.classList.add("d-none");
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
     }
 
     function removeLesson(index) {

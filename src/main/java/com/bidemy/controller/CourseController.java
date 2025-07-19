@@ -54,14 +54,10 @@ public class CourseController {
             throw new IllegalArgumentException("Course ID must not be null");
         }
 
-
-
-
         courseService.update(courseRequest.getId(), courseRequest);
 
         return "redirect:/instructor/courses/manage/curriculum?courseId=" + courseRequest.getId();
     }
-
 
 
     @PutMapping("/{id}")

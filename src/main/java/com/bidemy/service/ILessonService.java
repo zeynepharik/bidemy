@@ -6,7 +6,7 @@ import com.bidemy.model.response.LessonResponse;
 import java.util.List;
 
 public interface ILessonService {
-    LessonResponse createLesson(Long lessonId, LessonRequest lessonRequest);
+    LessonResponse createLesson(LessonRequest lessonRequest);
 
     LessonResponse getLessonById(Long id);
 

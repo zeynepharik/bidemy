@@ -44,7 +44,6 @@ public class SectionServiceImpl implements ISectionService {
             lessons = lessonMapper.toLessonEntities(request.getLessonList());
             for (Lesson lesson : lessons) {
                 lesson.setSection(newSection);
-                lesson.setId(null);
             }
         }
 

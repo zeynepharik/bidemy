@@ -19,6 +19,8 @@ public class LessonRequest {
     @NotBlank(message = "Lesson title is required")
     private String title;
 
+    private Long sectionId;
+
     @Valid
     private List<ExamRequest> exams = new ArrayList<>();
 

@@ -35,8 +35,8 @@ public class LessonServiceImpl implements ILessonService {
         return lessonMapper.toResponse(lesson);
     }
 
-    public LessonResponse createLesson(Long sectionId, LessonRequest lessonRequest) {
-        Section section = sectionRepository.findById(sectionId)
+    public LessonResponse createLesson( LessonRequest lessonRequest) {
+        Section section = sectionRepository.findById(lessonRequest.getSectionId())
                 .orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.SECTION_NOT_FOUND));
         Lesson lesson = lessonMapper.toEntity(lessonRequest);
         lesson.setSection(section);

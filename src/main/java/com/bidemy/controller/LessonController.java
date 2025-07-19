@@ -27,14 +27,14 @@ public class LessonController {
     }
 
     @PostMapping("/{sectionId}")
-    public String createLesson(@PathVariable Long sectionId, @ModelAttribute("lesson") @Valid LessonRequest lessonRequest, @RequestParam("courseId") Long courseId, Model model) {
-        lessonService.createLesson(sectionId, lessonRequest);
+    public String createLesson( @ModelAttribute("lesson") @Valid LessonRequest lessonRequest, @RequestParam("courseId") Long courseId, Model model) {
+        lessonService.createLesson(lessonRequest);
         return "redirect:/instructor/courses/manage/curriculum?courseId=" + courseId;    }
 
-    @PostMapping(value = "/{sectionId}/lessons/api", consumes = "application/json", produces = "application/json")
+    @PostMapping(value = "/api", consumes = "application/json", produces = "application/json")
     @ResponseBody
-    public LessonResponse createLessonApi(@PathVariable Long sectionId, @RequestBody @Valid LessonRequest lessonRequest) {
-        return lessonService.createLesson(sectionId, lessonRequest);
+    public LessonResponse createLessonApi( @RequestBody @Valid LessonRequest lessonRequest) {
+        return lessonService.createLesson(lessonRequest);
     }
 
     @GetMapping("/{id}")

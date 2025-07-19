@@ -98,7 +98,6 @@ public class UserController {
     }
 
 
-
     @GetMapping("/instructor/courses/manage/basics")
     public String showBasicsPage(Model model) {
         model.addAttribute("courseRequest", new CourseRequest());
