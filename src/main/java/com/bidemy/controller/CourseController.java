@@ -55,7 +55,6 @@ public class CourseController {
         }
 
         courseService.update(courseRequest.getId(), courseRequest);
-
         return "redirect:/instructor/courses/manage/curriculum?courseId=" + courseRequest.getId();
     }
 

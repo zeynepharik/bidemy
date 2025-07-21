@@ -33,7 +33,4 @@ public class HomeController {
         model.addAttribute("registerRequest", new RegisterRequest());
         return "register";
     }
-
-
-
 }
