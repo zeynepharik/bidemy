@@ -1,8 +1,6 @@
 package com.bidemy.controller;
 
 import com.bidemy.model.request.CourseRequest;
-import com.bidemy.model.request.LessonRequest;
-import com.bidemy.model.request.SectionRequest;
 import com.bidemy.model.response.CourseResponse;
 import com.bidemy.service.ICategoryService;
 import com.bidemy.service.ICourseService;
@@ -53,7 +51,6 @@ public class CourseController {
         if (courseRequest.getId() == null) {
             throw new IllegalArgumentException("Course ID must not be null");
         }
-
         courseService.update(courseRequest.getId(), courseRequest);
         return "redirect:/instructor/courses/manage/curriculum?courseId=" + courseRequest.getId();
     }

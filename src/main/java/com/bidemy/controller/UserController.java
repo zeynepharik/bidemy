@@ -4,16 +4,13 @@ import com.bidemy.mapper.CourseMapper;
 import com.bidemy.model.dto.OptionDTO;
 import com.bidemy.model.dto.QuestionDTO;
 import com.bidemy.model.dto.UserDTO;
-import com.bidemy.model.entity.*;
 import com.bidemy.model.request.*;
 import com.bidemy.model.response.CourseResponse;
-import com.bidemy.model.response.SectionResponse;
 import com.bidemy.service.ICategoryService;
 import com.bidemy.service.ICourseService;
 import com.bidemy.service.ISectionService;
 import com.bidemy.service.IUserService;
 import com.bidemy.service.impl.CategoryServiceImpl;
-import com.bidemy.service.impl.CourseServiceImpl;
 import com.bidemy.service.impl.SectionServiceImpl;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -21,7 +18,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -89,11 +85,8 @@ public class UserController {
                 }
             }
         }
-
-
         model.addAttribute("course", courseRequest);
         model.addAttribute("active", "curriculum");
-
         return "curriculum";
     }
 
