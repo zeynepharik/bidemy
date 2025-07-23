@@ -79,14 +79,6 @@ public class CourseServiceImpl implements ICourseService {
             throw new IllegalArgumentException("Course id must not be null");
         }
         Course course = courseRepository.findById(id).orElseThrow(() -> new BusinessValidationException(BusinessValidationRule.COURSE_NOT_FOUND));
-//        if (request.getBase64Image() != null && !request.getBase64Image().isEmpty()) {
-//            try {
-//                String newImageUrl = saveImageFile(request.getBase64Image(), course.getPictureUrl());
-//                course.setPictureUrl(newImageUrl);
-//            } catch (IOException e) {
-//                throw new BusinessValidationException(BusinessValidationRule.IMAGE_UPDATE_FAILED);
-//            }
-//        }
         if (request.getSections() != null) {
             for (SectionRequest section : request.getSections()) {
                 if (section.getLessonList() != null) {
